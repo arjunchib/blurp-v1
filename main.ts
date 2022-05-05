@@ -9,6 +9,14 @@ import {
 // TweetNaCl is a cryptography library that we use to verify requests
 // from Discord.
 import nacl from "https://cdn.skypack.dev/tweetnacl@v1.0.3?dts";
+// load env var
+import "https://deno.land/std@0.136.0/dotenv/load.ts";
+import {
+  APIChatInputApplicationCommandInteractionData,
+  APIInteraction,
+  InteractionType,
+  ApplicationCommandType,
+} from "https://deno.land/x/discord_api_types/v10.ts";
 
 // For all requests to "/" endpoint, we want to invoke home() handler.
 serve({
@@ -41,10 +49,11 @@ async function home(request: Request) {
     );
   }
 
-  const { type = 0, data = { options: [] } } = JSON.parse(body);
+  const interaction: APIInteraction = JSON.parse(body);
+  const { type, data } = interaction;
   // Discord performs Ping interactions to test our application.
   // Type 1 in a request implies a Ping interaction.
-  if (type === 1) {
+  if (type === InteractionType.Ping) {
     return json({
       type: 1, // Type 1 in a response is a Pong interaction response type.
     });
@@ -52,10 +61,13 @@ async function home(request: Request) {
 
   // Type 2 in a request is an ApplicationCommand interaction.
   // It implies that a user has issued a command.
-  if (type === 2) {
-    const { value } = data.options.find(
-      (option: any) => option.name === "name"
-    );
+  if (type === InteractionType.ApplicationCommand) {
+    if (data.type === ApplicationCommandType.ChatInput) {
+      data.options?.find;
+    }
+    const { value } = (
+      data as unknown as APIChatInputApplicationCommandInteractionData
+    ).options?.find((option: any) => option.name === "name");
     return json({
       // Type 4 responds with the below message retaining the user's
       // input at the top.
