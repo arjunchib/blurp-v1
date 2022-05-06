@@ -1,40 +1,21 @@
 import { Command } from "../lib/Command.ts";
-import { InteractionType } from "../lib/InteractionType.ts";
-import { ApplicationCommand } from "../lib/ApplicationCommand.ts";
-import { ApplicationCommandType } from "../lib/ApplicationCommandType.ts";
+import { json } from "https://deno.land/x/sift@0.5.0/mod.ts";
 
-interface HelloCommandModel {
-  name: "hello";
-  description: "Greet a person";
-  options: [];
-  id: "";
-  application_id: "asdasd";
-  version: "0";
-}
+export function HelloCommand() {
+  const cmd = new Command({
+    name: "hello",
+    description: `Dont be a stranger, say hello!`,
+  } as const);
 
-// interface HelloCommandModel
-//   extends ApplicationCommand<ApplicationCommandType.CHAT_INPUT> {
-//   name: "hello";
-//   description: "Greet a person";
-//   options: [];
-// }
-
-// const test: HelloCommandModel = {};
-
-export class HelloCommand extends Command<
-  HelloCommandModel,
-  ApplicationCommandType.CHAT_INPUT
-> {
-  name = "hello";
-  description = "Greet a person";
-  options = [];
-  blah;
-
-  constructor(blah: string) {
-    super();
-    this.blah = blah;
-    this.handler.on(InteractionType.APPLICATION_COMMAND, (interaction) => {
-      interaction.data?.name;
+  cmd.onSlashCommand((interaction) => {
+    interaction.data.name;
+    return json({
+      type: 4,
+      data: {
+        content: `Hello! ${interaction.data.id}`,
+      },
     });
-  }
+  });
+
+  return cmd;
 }
