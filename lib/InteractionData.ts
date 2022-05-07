@@ -1,11 +1,12 @@
 import { CommandOptions } from "./Command.ts";
+import { ApplicationCommandInteractionDataOption } from "./ApplicationCommandInteractionDataOption.ts";
 
 export type InteractionData<C extends CommandOptions> = {
   id: string;
   name: C["name"];
   type: number;
   resolved?: any;
-  options?: any;
+  options?: ApplicationCommandInteractionDataOption<Required<C["options"]>>[];
   guild_id?: string;
   custom_id?: string;
   component_type?: number;

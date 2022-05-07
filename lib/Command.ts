@@ -1,13 +1,14 @@
 import { json } from "https://deno.land/x/sift@0.5.0/mod.ts";
 import { CommandEvent } from "./CommandEvent.ts";
 import { Interaction, SlashCommandInteraction } from "./Interaction.ts";
+import { ApplicationCommandOption } from "./ApplicationCommandOption.ts";
 
 export interface CommandOptions {
   name: string;
   name_localizations?: any;
   description: string;
   description_localizations?: any;
-  options?: any;
+  options?: Readonly<ApplicationCommandOption[]>;
   default_permission?: any;
   type?: any;
 }
