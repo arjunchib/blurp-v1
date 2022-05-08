@@ -39,7 +39,7 @@ export class App {
   async serve() {
     await this.setupCommands();
     serve({
-      "/": (request) => this.home(request),
+      "/": async (request) => await this.home(request),
     });
   }
 

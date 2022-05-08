@@ -21,5 +21,5 @@ export type ApplicationCommandInteractionDataOption<C> = ToDataOption<
 type Intersect<T> = T extends { [K in keyof T]: infer E } ? E : T;
 
 type ToDataOption<T> = T extends { [key: string]: any }
-  ? Pick<T, "name" | "type"> & { focused?: boolean }
+  ? Pick<T, "name" | "type"> & { focused?: boolean; value: number | string }
   : undefined;

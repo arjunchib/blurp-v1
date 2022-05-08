@@ -70,13 +70,13 @@ export class Command<C extends CommandOptions = CommandOptions> {
   //   this.on(CommandEvent.MODAL_SUBMIT, fn);
   // }
 
-  emit(
+  async emit(
     event: CommandEvent,
     interaction: Interaction<any>
-  ): AllowPromise<Response> {
+  ): Promise<Response> {
     const fn = this.handlers.get(event);
     if (fn) {
-      return fn(interaction);
+      return await fn(interaction);
     } else {
       return json({
         type: 4,

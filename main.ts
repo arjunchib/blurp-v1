@@ -1,5 +1,5 @@
 import { App } from "./lib/App.ts";
-import { ImageCommand } from "./commands/hello.ts";
+import { ImageCommand } from "./commands/image.ts";
 import "https://deno.land/std@0.136.0/dotenv/load.ts";
 
 const app = new App({
