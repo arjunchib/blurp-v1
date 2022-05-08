@@ -6,7 +6,7 @@ export type InteractionData<C extends CommandOptions> = {
   name: C["name"];
   type: number;
   resolved?: any;
-  options?: ApplicationCommandInteractionDataOption<Required<C["options"]>>[];
+  options?: ApplicationCommandInteractionDataOption<C["options"]>[];
   guild_id?: string;
   custom_id?: string;
   component_type?: number;

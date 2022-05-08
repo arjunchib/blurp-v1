@@ -1,49 +1,27 @@
 import { Command } from "../lib/Command.ts";
 import { json } from "https://deno.land/x/sift@0.5.0/mod.ts";
 
-export function HelloCommand() {
+export function ImageCommand() {
   const cmd = new Command({
-    name: "hello",
-    description: `Dont be a stranger, say hello!`,
+    name: "image",
+    description: "Find closest image taken by Landsat 8",
     options: [
       {
-        name: "name",
+        name: "latitude",
         required: true,
-        type: 3,
-        description: "The name of the person",
+        type: 10,
+        description: "Latitude from -180 to 180",
       },
       {
-        name: "name2",
-        required: false,
-        type: 3,
-        description: "The name of the person2",
+        name: "longitude",
+        required: true,
+        type: 10,
+        description: "Longitude from -180 to 180",
       },
     ],
   } as const);
 
-  const test = {
-    name: "hello",
-    description: `Dont be a stranger, say hello!`,
-    options: [
-      {
-        name: "name",
-        required: true,
-        type: 3,
-        description: "The name of the person",
-      },
-      {
-        name: "name2",
-        required: false,
-        type: 3,
-        description: "The name of the person2",
-      },
-    ] as const,
-  } as const;
-
-  type test = typeof test.options[number];
-
   cmd.onSlashCommand((interaction) => {
-    // const option = interaction.data.options?.[0];
     return json({
       type: 4,
       data: {

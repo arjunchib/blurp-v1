@@ -24,8 +24,10 @@ type AllowPromise<T> = Promise<T> | T;
 
 export class Command<C extends CommandOptions = CommandOptions> {
   handlers = new Map<CommandEvent, (...args: any) => AllowPromise<Response>>();
+  _options: CommandOptions;
 
   constructor(options: C) {
+    this._options = options;
     Object.assign(this, options);
   }
 

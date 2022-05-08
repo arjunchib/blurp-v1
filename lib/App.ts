@@ -14,7 +14,8 @@ import "https://deno.land/std@0.136.0/dotenv/load.ts";
 import {
   APIInteraction,
   InteractionType,
-} from "https://deno.land/x/discord_api_types/v10.ts";
+  RESTPutAPIApplicationGuildCommandsJSONBody,
+} from "https://deno.land/x/discord_api_types/v9.ts";
 import { CommandEvent } from "./CommandEvent.ts";
 import { Command } from "./Command.ts";
 import { ApplicationCommandType } from "./ApplicationCommandType.ts";
@@ -23,6 +24,9 @@ import { Interaction } from "./Interaction.ts";
 
 interface AppOptions {
   commands: Command[];
+  application_id: string;
+  bot_token: string;
+  guild_id?: string;
 }
 
 export class App {
@@ -32,10 +36,29 @@ export class App {
     this.options = options;
   }
 
-  serve() {
+  async serve() {
+    await this.setupCommands();
     serve({
       "/": (request) => this.home(request),
     });
+  }
+
+  private async setupCommands() {
+    const { application_id, guild_id, bot_token, commands } = this.options;
+    const body = commands.map((c) => c._options);
+    const res = await fetch(
+      `https://discord.com/api/v9/applications/${application_id}/guilds/${guild_id}/commands`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bot ${bot_token}`,
+          "Content-Type": "application/json; charset=UTF-8",
+        },
+        body: JSON.stringify(body),
+      }
+    );
+    console.log(`${res.status} ${res.statusText}`);
+    console.log(await res.json());
   }
 
   private async home(request: Request) {
