@@ -18,6 +18,24 @@ export function ImageCommand() {
         type: 10,
         description: "Longitude from -180 to 180",
       },
+      {
+        name: "year",
+        required: false,
+        type: 10,
+        description: "Year of the observation",
+      },
+      {
+        name: "month",
+        required: false,
+        type: 10,
+        description: "Month of the observation (1 - 12)",
+      },
+      {
+        name: "dim",
+        required: false,
+        type: 10,
+        description: "Zoom level of image (default 0.1)",
+      },
     ],
   } as const);
 
@@ -28,21 +46,31 @@ export function ImageCommand() {
     const { value: lon } = interaction.data.options?.find(
       (opt) => opt.name === "longitude"
     )!;
+    const { value: year = 2022 } = interaction.data.options?.find(
+      (opt) => opt.name === "year"
+    )!;
+    const { value: month = 1 } = interaction.data.options?.find(
+      (opt) => opt.name === "month"
+    )!;
+    const { value: dim = 0.1 } = interaction.data.options?.find(
+      (opt) => opt.name === "dim"
+    )!;
     const formatter = Intl.DateTimeFormat("en-US", {
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
     });
-    const parts = formatter.formatToParts();
-    const { value: year } = parts.find((p) => p.type === "year")!;
-    const { value: month } = parts.find((p) => p.type === "month")!;
-    const { value: day } = parts.find((p) => p.type === "day")!;
+    const parts = formatter.formatToParts(
+      new Date(year as number, (month as number) - 1)
+    );
+    const { value: yy } = parts.find((p) => p.type === "year")!;
+    const { value: mm } = parts.find((p) => p.type === "month")!;
+    const { value: dd } = parts.find((p) => p.type === "day")!;
     const params = new URLSearchParams({
       lat: lat.toString(),
       lon: lon.toString(),
-      // date: `${year}-${month}-${day}`,
-      dim: "0.1",
-      date: "2022-01-01",
+      date: `${yy}-${mm}-${dd}`,
+      dim: dim.toString(),
       api_key: Deno.env.get("NASA_API_KEY")!,
     });
     const url = new URL(

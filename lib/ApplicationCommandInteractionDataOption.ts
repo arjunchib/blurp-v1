@@ -11,8 +11,8 @@ import { ApplicationCommandOption } from "./ApplicationCommandOption.ts";
 //   focused?: boolean;
 // }
 
-export type ApplicationCommandInteractionDataOption<C> = ToDataOption<
-  Intersect<NonNullable<C>>
+export type ApplicationCommandInteractionDataOption<C> = Expand<
+  ToDataOption<Intersect<NonNullable<C>>>
 >;
 
 // I assume this works via Distributive Conditional Types
@@ -23,3 +23,5 @@ type Intersect<T> = T extends { [K in keyof T]: infer E } ? E : T;
 type ToDataOption<T> = T extends { [key: string]: any }
   ? Pick<T, "name" | "type"> & { focused?: boolean; value: number | string }
   : undefined;
+
+type Expand<T> = T extends unknown ? { [K in keyof T]: T[K] } : never;
