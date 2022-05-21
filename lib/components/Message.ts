@@ -1,9 +1,19 @@
+import {
+  APIInteractionResponseChannelMessageWithSource,
+  InteractionResponseType,
+} from "https://deno.land/x/discord_api_types@0.32.1/v9.ts";
+
 interface MessageProps {
-  name: string;
+  children?: string[] | string;
 }
 
-export function Message(props: MessageProps) {
+export function Message(
+  props: MessageProps
+): APIInteractionResponseChannelMessageWithSource {
+  const { children } = props;
+  const content = Array.isArray(children) ? children.join("") : children;
   return {
-    content: `Hello, ${props.name}!`,
+    type: InteractionResponseType.ChannelMessageWithSource,
+    data: { content },
   };
 }

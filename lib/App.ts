@@ -7,8 +7,9 @@ import {
 import {
   APIInteraction,
   InteractionType,
+  APIApplicationCommandInteractionDataBasicOption,
 } from "https://deno.land/x/discord_api_types@0.32.1/v9.ts";
-import { verifySignature } from "./util.ts";
+import { verifySignature, digestMessage } from "./util.ts";
 import { Command } from "./Command.ts";
 
 export interface AppOptions {
@@ -39,6 +40,14 @@ export class App {
       });
       return command;
     });
+    const commandsHash = await digestMessage(
+      JSON.stringify([body, this.options])
+    );
+    if (localStorage.getItem("commandsHash") === commandsHash) {
+      console.log("Skipped updating commands");
+      return;
+    }
+    localStorage.setItem("commandsHash", commandsHash);
     const res = await fetch(
       `https://discord.com/api/v9/applications/${application_id}/guilds/${guild_id}/commands`,
       {
@@ -58,9 +67,7 @@ export class App {
     // validateRequest() ensures that a request is of POST method and
     // has the following headers.
     const { error } = await validateRequest(request, {
-      POST: {
-        headers: ["X-Signature-Ed25519", "X-Signature-Timestamp"],
-      },
+      POST: { headers: ["X-Signature-Ed25519", "X-Signature-Timestamp"] },
     });
     if (error) {
       return json({ error: error.message }, { status: error.status });
@@ -71,19 +78,13 @@ export class App {
     // important as Discord sends invalid requests to test our verification.
     const { valid, body } = await verifySignature(request);
     if (!valid) {
-      return json(
-        { error: "Invalid request" },
-        {
-          status: 401,
-        }
-      );
+      return json({ error: "Invalid request" }, { status: 401 });
     }
 
     const interaction = JSON.parse(body) as APIInteraction;
-    const { type } = interaction;
     // Discord performs Ping interactions to test our application.
     // Type 1 in a request implies a Ping interaction.
-    if (type === InteractionType.Ping) {
+    if (interaction.type === InteractionType.Ping) {
       return json({
         type: 1, // Type 1 in a response is a Pong interaction response type.
       });
@@ -92,20 +93,29 @@ export class App {
     // Type 2 in a request is an ApplicationCommand interaction.
     // It implies that a user has issued a command.
     if (
-      type === InteractionType.ApplicationCommand &&
-      interaction.data.type === 1 &&
-      interaction.data.options?.[0] &&
-      interaction.data.options?.[0].type === 3
+      interaction.type === InteractionType.ApplicationCommand &&
+      interaction.data.type === 1
     ) {
-      console.log(interaction.data);
-      const data = this.options.commands[0].resolve(
-        interaction.data.options[0].value
-      );
-      console.log(data);
-      return json({
-        type: 4,
-        data,
-      });
+      const name = interaction.data.name;
+      const command = this.options.commands.find((c) => c.name === name);
+      if (command == null) {
+        return json({
+          type: 4,
+          data: { content: "Something went wrong!" },
+        });
+      }
+      const props =
+        interaction.data.options?.reduce<
+          Record<string, string | number | boolean>
+        >((acc, o) => {
+          // ignore subcommands for now
+          const { value, name } =
+            o as APIApplicationCommandInteractionDataBasicOption;
+          acc[name] = value;
+          return acc;
+        }, {}) ?? {};
+      const res = command.resolve(props);
+      return json(res);
     }
 
     // We will return a bad request error as a valid Discord request

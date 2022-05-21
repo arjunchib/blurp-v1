@@ -12,6 +12,6 @@ export const Hello = createCommand({
     },
   },
   resolve({ name }) {
-    return <Message name={name || "stranger"}></Message>;
+    return <Message>Hello, {name || "stranger"}!</Message>;
   },
 });
