@@ -1,0 +1,6 @@
+{
+  "imports": {
+    "blurp/jsx-runtime": "./lib/jsx-runtime.ts",
+    "blurp/jsx-dev-runtime": "./lib/jsx-runtime.ts"
+  }
+}
