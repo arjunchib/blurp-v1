@@ -3,5 +3,8 @@
     "jsx": "react-jsx",
     "jsxImportSource": "blurp"
   },
-  "importMap": "./import_map.json"
+  "importMap": "./import_map.json",
+  "tasks": {
+    "dev": "deno run -A --no-check=remote --watch main.ts"
+  }
 }

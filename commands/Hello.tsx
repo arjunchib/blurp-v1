@@ -6,12 +6,12 @@ export const Hello = createCommand({
   description: "Responds with a salutation",
   options: {
     name: {
-      type: 3,
+      type: "string",
       required: false,
       description: "Your name",
     },
   },
   resolve({ name }) {
-    return <Message>Hello, {name || "stranger"}!</Message>;
+    return <Message>Hello, {name || "stranger"}</Message>;
   },
 });

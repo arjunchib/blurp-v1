@@ -53,10 +53,19 @@ export class App {
     const body = commands.map((c) => {
       const command = { ...c } as any;
       delete command.resolve;
-      command.options = Object.entries(command.options!).map(([k, v]) => {
-        (v as any).name = k;
-        return v;
-      });
+      command.options = Object.entries(command.options!).map(
+        ([k, v]: [any, any]) => {
+          v.name = k;
+          switch (v.type) {
+            case "string":
+              v.type = 3;
+              break;
+            default:
+              v.type = 4;
+          }
+          return v;
+        }
+      );
       return command;
     });
     if (await this.tryCache("commandHash", [body, this.options])) {
