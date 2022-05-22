@@ -1,6 +1,6 @@
 import "https://deno.land/std@0.136.0/dotenv/load.ts";
 import { App } from "./lib/App.ts";
-import { Hello } from "./commands/hello.tsx";
+import { Hello } from "./commands/Hello.tsx";
 
 const app = new App({
   commands: [Hello],
