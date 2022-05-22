@@ -43,11 +43,11 @@ export class App {
     const commandsHash = await digestMessage(
       JSON.stringify([body, this.options])
     );
-    if (localStorage.getItem("commandsHash") === commandsHash) {
+    if (localStorage?.getItem("commandsHash") === commandsHash) {
       console.log("Skipped updating commands");
       return;
     }
-    localStorage.setItem("commandsHash", commandsHash);
+    localStorage?.setItem("commandsHash", commandsHash);
     const res = await fetch(
       `https://discord.com/api/v9/applications/${application_id}/guilds/${guild_id}/commands`,
       {
