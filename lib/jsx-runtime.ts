@@ -1,5 +1,5 @@
 export const jsx = (tag: string | Function, props: object) => {
-  console.log(tag, props);
+  // console.log(tag, props);
   if (typeof tag === "function") {
     return tag({ ...props });
   } else {

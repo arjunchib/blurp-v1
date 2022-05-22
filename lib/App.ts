@@ -29,6 +29,25 @@ export class App {
     });
   }
 
+  private async tryCache(key: string, data: any) {
+    try {
+      // Call localStorage early to bail if it does not exist
+      const storedHash = localStorage.getItem(key);
+      const hash = await digestMessage(JSON.stringify(data));
+      if (storedHash === hash) {
+        return true;
+      }
+      localStorage.setItem(key, hash);
+      return false;
+    } catch (e) {
+      if (e instanceof ReferenceError) {
+        return false;
+      } else {
+        throw e;
+      }
+    }
+  }
+
   private async setupCommands() {
     const { application_id, guild_id, bot_token, commands } = this.options;
     const body = commands.map((c) => {
@@ -40,14 +59,10 @@ export class App {
       });
       return command;
     });
-    const commandsHash = await digestMessage(
-      JSON.stringify([body, this.options])
-    );
-    if (localStorage?.getItem("commandsHash") === commandsHash) {
+    if (await this.tryCache("commandHash", [body, this.options])) {
       console.log("Skipped updating commands");
       return;
     }
-    localStorage?.setItem("commandsHash", commandsHash);
     const res = await fetch(
       `https://discord.com/api/v9/applications/${application_id}/guilds/${guild_id}/commands`,
       {
@@ -59,8 +74,8 @@ export class App {
         body: JSON.stringify(body),
       }
     );
-    console.log(`${res.status} ${res.statusText}`);
-    console.log(await res.json());
+    // console.log(`${res.status} ${res.statusText}`);
+    // console.log(await res.json());
   }
 
   private async home(request: Request) {
