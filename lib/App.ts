@@ -8,7 +8,7 @@ import {
   APIInteraction,
   InteractionType,
   APIApplicationCommandInteractionDataBasicOption,
-} from "https://deno.land/x/discord_api_types@0.32.1/v9.ts";
+} from "discord_api_types";
 import { verifySignature, digestMessage } from "./util.ts";
 import { Command } from "./Command.ts";
 
