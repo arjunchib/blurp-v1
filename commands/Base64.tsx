@@ -1,7 +1,6 @@
-import { createCommand } from "../lib/Command.ts";
 import { Message } from "../lib/components/Message.ts";
 
-export const Base64 = createCommand({
+export const options = {
   name: "base64",
   description: "Converts a string to base64 encoded",
   options: {
@@ -11,8 +10,17 @@ export const Base64 = createCommand({
       description: "Input to be encoded",
     },
   },
-  resolve({ input }) {
-    const output = btoa(input);
-    return <Message>```{output}```</Message>;
+  state: {
+    i: 0,
   },
-});
+  listeners: {
+    click(props: any, state: any) {
+      state.i += 1;
+    },
+  },
+};
+
+export default function Base641(props: any, state: any, listeners: any) {
+  const output = btoa(props.input);
+  return <Message>{output}</Message>;
+}

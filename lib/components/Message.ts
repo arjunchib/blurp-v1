@@ -1,28 +1,14 @@
-import {
-  APIInteractionResponseChannelMessageWithSource,
-  InteractionResponseType,
-} from "https://deno.land/x/discord_api_types@0.32.1/v9.ts";
-import { ActionRow } from "./ActionRow.ts";
+import { APIInteractionResponseCallbackData } from "discord_api_types";
 
 interface MessageProps {
-  children?: unknown[];
+  children?: string[];
 }
 
-function isString(value: unknown): value is string {
-  return typeof value === "string";
-}
-
-function isActionRow(value: any): value is ReturnType<typeof ActionRow> {
-  return value[Symbol.for("type")] === "ActionRow";
-}
-
-export function Message({
-  children,
-}: MessageProps): APIInteractionResponseChannelMessageWithSource {
-  const content = children?.filter(isString).join("");
-  const components = children?.filter(isActionRow) as any;
+export function Message(
+  props: MessageProps
+): APIInteractionResponseCallbackData {
+  console.log(props.children);
   return {
-    type: InteractionResponseType.ChannelMessageWithSource,
-    data: { content, components },
+    content: props.children?.join(""),
   };
 }

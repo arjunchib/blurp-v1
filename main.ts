@@ -1,14 +1,11 @@
 import "https://deno.land/std@0.136.0/dotenv/load.ts";
-import { App } from "./lib/App.ts";
-import { Hello } from "./commands/Hello.tsx";
-import { Base64 } from "./commands/Base64.tsx";
-import { Poll } from "./commands/Poll.tsx";
+// import {  } from "./commands/Base64.tsx";
+import { start } from "./lib/start.ts";
+import commands from "./commands.gen.ts";
 
-const app = new App({
-  commands: [Hello, Base64, Poll],
+start({
+  commands,
   application_id: Deno.env.get("APPLICATION_ID")!,
   bot_token: Deno.env.get("BOT_TOKEN")!,
   guild_id: Deno.env.get("GUILD_ID"),
 });
-
-app.serve();
