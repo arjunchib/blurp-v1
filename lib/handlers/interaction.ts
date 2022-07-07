@@ -3,36 +3,29 @@ import {
   InteractionType,
   APIInteractionResponse,
   ApplicationCommandType,
-  APIApplicationCommandInteractionDataOption,
   InteractionResponseType,
 } from "discord_api_types";
-import Base64 from "../../commands/Base64.tsx";
+import { inputs } from "../globals.ts";
+import type { Options } from "../start.ts";
 
 export function onInteraction(
-  interaction: APIInteraction
+  interaction: APIInteraction,
+  ctx: Options
 ): APIInteractionResponse {
   if (interaction.type === InteractionType.Ping) {
     return { type: 1 };
   } else if (interaction.type === InteractionType.ApplicationCommand) {
     if (interaction.data.type === ApplicationCommandType.ChatInput) {
+      const command = ctx.commands.find(
+        (c) => c.name === interaction.data.name
+      );
+      inputs.clear();
+      interaction.data.options?.forEach((opt) => inputs.set(opt.name, opt));
       return {
         type: InteractionResponseType.ChannelMessageWithSource,
-        data: Base64(toProps(interaction.data.options), {}, {}),
+        data: command!(),
       };
     }
   }
   throw new Error("Invalid request");
-}
-
-function toProps(
-  options: APIApplicationCommandInteractionDataOption[] | undefined
-) {
-  const props: Record<string, any> = {};
-  if (!options) return props;
-  for (const option of options) {
-    if ("value" in option) {
-      props[option.name] = option.value;
-    }
-  }
-  return props;
 }

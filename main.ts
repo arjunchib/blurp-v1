@@ -1,5 +1,4 @@
 import "https://deno.land/std@0.136.0/dotenv/load.ts";
-// import {  } from "./commands/Base64.tsx";
 import { start } from "./lib/start.ts";
 import commands from "./commands.gen.ts";
 

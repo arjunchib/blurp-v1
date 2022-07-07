@@ -1,25 +1,10 @@
 import { serve, validateRequest, json } from "sift";
 import { verifySignature, digestMessage } from "./util.ts";
 import { onInteraction } from "./handlers/interaction.ts";
-import {
-  APIInteractionResponseCallbackData,
-  RESTPostAPIApplicationCommandsJSONBody,
-} from "discord_api_types";
+import { APIInteractionResponseCallbackData } from "discord_api_types";
+import { options as _options } from "./globals.ts";
 
-interface Command {
-  handler(
-    props: any,
-    state: any,
-    listeners: any
-  ): APIInteractionResponseCallbackData;
-  options: {
-    name: string;
-    description: string;
-    options: Record<string, any>;
-    state: Record<string, any>;
-    listeners: Record<string, any>;
-  };
-}
+type Command = () => APIInteractionResponseCallbackData;
 
 export interface Options {
   commands: Command[];
@@ -29,11 +14,15 @@ export interface Options {
 }
 
 export function start(options: Options) {
-  registerCommands(options);
-  serve({ "/": onRequest });
+  try {
+    registerCommands(options);
+    serve({ "/": (req) => onRequest(req, options) });
+  } catch (e) {
+    console.error(e);
+  }
 }
 
-async function onRequest(request: Request): Promise<Response> {
+async function onRequest(request: Request, ctx: Options): Promise<Response> {
   // validateRequest() ensures that a request is of POST method and
   // has the following headers.
   const { error } = await validateRequest(request, {
@@ -53,8 +42,7 @@ async function onRequest(request: Request): Promise<Response> {
 
   // Handle interaction if request is a discord interaction event
   try {
-    const res = onInteraction(JSON.parse(body));
-    console.log(res);
+    const res = onInteraction(JSON.parse(body), ctx);
     return json(res);
   } catch (e) {
     console.error(e);
@@ -66,23 +54,18 @@ async function onRequest(request: Request): Promise<Response> {
 
 async function registerCommands(options: Options) {
   const { application_id, guild_id, bot_token, commands } = options;
-  const body = commands.map((c) => {
-    const { name, description, options } = c.options;
-    const command: Record<string, any> = { name, description };
-    command.options = Object.entries(options!).map(([k, v]: [any, any]) => {
-      v.name = k;
-      switch (v.type) {
-        case "string":
-          v.type = 3;
-          break;
-        default:
-          v.type = 4;
-      }
-      return v;
-    });
-    return command;
+  const body = commands.map((command) => {
+    _options.clear();
+    command();
+    console.log(command.name);
+    return {
+      name: command.name,
+      description: "Lorem ipsum...",
+      options: [..._options.values()],
+    };
   });
-  if (await tryCache("commandHash", [body, options])) {
+  console.log(body);
+  if (await tryCache("commandHash", body)) {
     console.log("Skipped updating commands");
     return;
   }
@@ -97,6 +80,8 @@ async function registerCommands(options: Options) {
       body: JSON.stringify(body),
     }
   );
+  const j = await res.json();
+  console.log(j.errors);
 }
 
 async function tryCache(key: string, data: any) {
