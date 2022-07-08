@@ -21,9 +21,11 @@ export function onInteraction(
       );
       inputs.clear();
       interaction.data.options?.forEach((opt) => inputs.set(opt.name, opt));
+      const data = command!();
+      console.log(JSON.stringify(data));
       return {
         type: InteractionResponseType.ChannelMessageWithSource,
-        data: command!(),
+        data,
       };
     }
   }

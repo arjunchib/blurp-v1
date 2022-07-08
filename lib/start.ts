@@ -57,14 +57,13 @@ async function registerCommands(options: Options) {
   const body = commands.map((command) => {
     _options.clear();
     command();
-    console.log(command.name);
     return {
       name: command.name,
       description: "Lorem ipsum...",
       options: [..._options.values()],
     };
   });
-  console.log(body);
+  // console.log(body);
   if (await tryCache("commandHash", body)) {
     console.log("Skipped updating commands");
     return;

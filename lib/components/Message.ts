@@ -1,14 +1,37 @@
-import { APIInteractionResponseCallbackData } from "discord_api_types";
+import {
+  APIInteractionResponseCallbackData,
+  ComponentType,
+} from "discord_api_types";
+import type { ActionRow } from "./ActionRow.ts";
+
+type Child = string | ReturnType<typeof ActionRow>;
 
 interface MessageProps {
-  children?: string[];
+  children?: Child[] | Child;
+}
+
+function isActionRow(
+  // deno-lint-ignore no-explicit-any
+  component: any
+): component is ReturnType<typeof ActionRow> {
+  return component["type"] === ComponentType.ActionRow;
 }
 
 export function Message(
   props: MessageProps
 ): APIInteractionResponseCallbackData {
-  console.log(props.children);
+  if (props.children === undefined) {
+    props.children = "";
+  }
+  if (!Array.isArray(props.children)) {
+    props.children = [props.children];
+  }
+  const content = props.children
+    ?.filter((child) => typeof child === "string")
+    .join("");
+  const components = props.children?.filter(isActionRow);
   return {
-    content: props.children?.join(""),
+    content,
+    components,
   };
 }
