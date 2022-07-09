@@ -1,4 +1,4 @@
-import Base64 from "./commands/Base64.tsx";
+import Base64 from "./commands/counter.tsx";
 
 const commands = [Base64];
 
