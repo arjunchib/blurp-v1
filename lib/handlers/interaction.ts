@@ -69,6 +69,14 @@ export async function onInteraction(
     console.log(store);
     state.buttonFn();
     console.log(store);
+    const newProp = {
+      name: command.name,
+      inputs: [...inputs],
+      store: [...store],
+    };
+    const customId = await hash(newProp);
+    props.set(customId, newProp);
+    state.hash = customId;
     state.buttonCount = 0;
     state.mode = "output2";
     const data = command();
