@@ -35,13 +35,48 @@ export async function onInteraction(
       state.hash = customId;
       state.buttonCount = 0;
       const data = command();
-      console.log(JSON.stringify(prop));
+      // console.log(JSON.stringify(prop));
       console.log(JSON.stringify(data));
       return {
         type: InteractionResponseType.ChannelMessageWithSource,
         data,
       };
     }
+  } else if (interaction.type === InteractionType.MessageComponent) {
+    const [propHash, buttonId] = interaction.data.custom_id.split("-");
+    const prop = props.get(propHash)!;
+    const command = ctx.commands.find((c) => c.name === prop.name)!;
+    inputs.clear();
+    store.clear();
+    for (const [k, v] of prop.inputs) {
+      inputs.set(k, v);
+    }
+    for (const [k, v] of prop.store) {
+      store.set(k, v);
+    }
+    state.buttonCount = 0;
+    state.mode = "output1";
+    state.buttonClicked = parseInt(buttonId);
+    command();
+    inputs.clear();
+    store.clear();
+    for (const [k, v] of prop.inputs) {
+      inputs.set(k, v);
+    }
+    for (const [k, v] of prop.store) {
+      store.set(k, v);
+    }
+    console.log(store);
+    state.buttonFn();
+    console.log(store);
+    state.buttonCount = 0;
+    state.mode = "output2";
+    const data = command();
+    console.log(JSON.stringify(data));
+    return {
+      type: InteractionResponseType.UpdateMessage,
+      data,
+    };
   }
   throw new Error("Invalid request");
 }

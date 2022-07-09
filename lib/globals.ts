@@ -8,7 +8,9 @@ export const store = new Map<string, any>
 export const state = {
   mode: 'input1',
   hash: '',
-  buttonCount: 0
+  buttonCount: 0,
+  buttonClicked: -1,
+  buttonFn: () => {}
 }
 export const props = new Map<string, {
   name: string

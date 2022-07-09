@@ -4,7 +4,7 @@ import {
   ComponentType,
   ButtonStyle,
 } from "discord_api_types";
-import { store, inputs, state, props as _props } from "../globals.ts";
+import { state, props as _props } from "../globals.ts";
 
 interface ButtonProps {
   children?: string;
@@ -12,6 +12,9 @@ interface ButtonProps {
 }
 
 export function Button(props: ButtonProps): APIButtonComponentWithCustomId {
+  if (state.mode === "output1" && state.buttonCount === state.buttonClicked) {
+    state.buttonFn = props.onClick!;
+  }
   return {
     type: ComponentType.Button,
     style: ButtonStyle.Primary,
