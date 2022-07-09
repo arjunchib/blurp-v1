@@ -3,7 +3,7 @@ import {
   APIButtonComponentWithCustomId,
   ComponentType,
   ButtonStyle,
-} from "discord_api_types";
+} from "../deps.ts";
 import { state, props as _props } from "../globals.ts";
 
 interface ButtonProps {

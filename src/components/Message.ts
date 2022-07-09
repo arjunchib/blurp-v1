@@ -1,7 +1,4 @@
-import {
-  APIInteractionResponseCallbackData,
-  ComponentType,
-} from "discord_api_types";
+import { APIInteractionResponseCallbackData, ComponentType } from "../deps.ts";
 import type { ActionRow } from "./ActionRow.ts";
 
 type Child = string | ReturnType<typeof ActionRow>;

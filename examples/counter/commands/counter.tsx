@@ -1,8 +1,4 @@
-import { Message } from "../lib/components/Message.ts";
-import { useInput } from "../lib/hooks/use-input.ts";
-import { ActionRow } from "../lib/components/ActionRow.ts";
-import { Button } from "../lib/components/Button.ts";
-import { useState } from "../lib/hooks/use-state.ts";
+import { Message, ActionRow, Button, useState, useInput } from "blurp";
 
 export default function counter() {
   const input = useInput("start", "string", "Value to start at", false);

@@ -3,7 +3,7 @@ import {
   APIMessageActionRowComponent,
   ComponentType,
   APIButtonComponent,
-} from "discord_api_types";
+} from "../deps.ts";
 
 interface ActionRowProps {
   children?: APIButtonComponent | APIButtonComponent[];

@@ -1,5 +1,5 @@
 import "https://deno.land/std@0.136.0/dotenv/load.ts";
-import { start } from "./lib/start.ts";
+import { start } from "blurp";
 import commands from "./commands.gen.ts";
 
 start({

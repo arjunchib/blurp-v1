@@ -4,7 +4,7 @@ import {
   APIInteractionResponse,
   ApplicationCommandType,
   InteractionResponseType,
-} from "discord_api_types";
+} from "../deps.ts";
 import { inputs, store, state, props } from "../globals.ts";
 import type { Options } from "../start.ts";
 

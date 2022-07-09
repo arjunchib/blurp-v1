@@ -1,7 +1,11 @@
-import { serve, validateRequest, json } from "sift";
 import { verifySignature, digestMessage } from "./util.ts";
 import { onInteraction } from "./handlers/interaction.ts";
-import { APIInteractionResponseCallbackData } from "discord_api_types";
+import {
+  APIInteractionResponseCallbackData,
+  serve,
+  validateRequest,
+  json,
+} from "./deps.ts";
 import { options as _options } from "./globals.ts";
 
 type Command = () => APIInteractionResponseCallbackData;

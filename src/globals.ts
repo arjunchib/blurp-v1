@@ -1,4 +1,4 @@
-import { APIApplicationCommandInteractionDataOption, RESTPostAPIApplicationCommandsJSONBody } from "discord_api_types";
+import { APIApplicationCommandInteractionDataOption, RESTPostAPIApplicationCommandsJSONBody } from "./deps.ts";
 
 type Flatten<Type> = Type extends Array<infer Item> ? Item : Type;
 
