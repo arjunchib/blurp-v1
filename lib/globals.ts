@@ -1,6 +1,17 @@
 import { APIApplicationCommandInteractionDataOption, RESTPostAPIApplicationCommandsJSONBody } from "discord_api_types";
 
-export let inputs = new Map<string, APIApplicationCommandInteractionDataOption>;
-export let options = new Map<string, Flatten< RESTPostAPIApplicationCommandsJSONBody['options']>>;
-
 type Flatten<Type> = Type extends Array<infer Item> ? Item : Type;
+
+export const inputs = new Map<string, APIApplicationCommandInteractionDataOption>;
+export const options = new Map<string, Flatten< RESTPostAPIApplicationCommandsJSONBody['options']>>;
+export const store = new Map<string, any>
+export const state = {
+  mode: 'input1',
+  hash: '',
+  buttonCount: 0
+}
+export const props = new Map<string, {
+  name: string
+  inputs: [string, APIApplicationCommandInteractionDataOption][];
+  store: [string, any][];
+}>

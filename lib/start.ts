@@ -42,7 +42,7 @@ async function onRequest(request: Request, ctx: Options): Promise<Response> {
 
   // Handle interaction if request is a discord interaction event
   try {
-    const res = onInteraction(JSON.parse(body), ctx);
+    const res = await onInteraction(JSON.parse(body), ctx);
     return json(res);
   } catch (e) {
     console.error(e);
@@ -63,7 +63,7 @@ async function registerCommands(options: Options) {
       options: [..._options.values()],
     };
   });
-  // console.log(body);
+  console.log(body);
   if (await tryCache("commandHash", body)) {
     console.log("Skipped updating commands");
     return;

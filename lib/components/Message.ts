@@ -27,7 +27,7 @@ export function Message(
     props.children = [props.children];
   }
   const content = props.children
-    ?.filter((child) => typeof child === "string")
+    ?.filter((child) => !isActionRow(child))
     .join("");
   const components = props.children?.filter(isActionRow);
   return {
