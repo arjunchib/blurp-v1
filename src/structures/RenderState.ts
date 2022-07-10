@@ -2,7 +2,7 @@ import {
   APIApplicationCommandInteractionDataOption,
   RESTPostAPIApplicationCommandsJSONBody,
 } from "../deps.ts";
-import { Command } from "../start.ts";
+import { Command } from "./Command.ts";
 
 type Flatten<Type> = Type extends Array<infer Item> ? Item : Type;
 

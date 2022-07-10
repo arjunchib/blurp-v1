@@ -1,23 +1,10 @@
 import { verifySignature, digestMessage } from "./util.ts";
 import { onInteraction } from "./interactions/interaction.ts";
-import {
-  APIInteractionResponseCallbackData,
-  serve,
-  validateRequest,
-  json,
-} from "./deps.ts";
+import { serve, validateRequest, json } from "./deps.ts";
 import { RenderState } from "./structures/RenderState.ts";
+import { Context } from "./structures/Context.ts";
 
-export type Command = () => APIInteractionResponseCallbackData;
-
-export interface Options {
-  commands: Command[];
-  application_id: string;
-  bot_token: string;
-  guild_id?: string;
-}
-
-export function start(options: Options) {
+export function start(options: Context) {
   try {
     registerCommands(options);
     serve({ "/": (req) => onRequest(req, options) });
@@ -26,7 +13,7 @@ export function start(options: Options) {
   }
 }
 
-async function onRequest(request: Request, ctx: Options): Promise<Response> {
+async function onRequest(request: Request, ctx: Context): Promise<Response> {
   // validateRequest() ensures that a request is of POST method and
   // has the following headers.
   const { error } = await validateRequest(request, {
@@ -56,7 +43,7 @@ async function onRequest(request: Request, ctx: Options): Promise<Response> {
   }
 }
 
-async function registerCommands(options: Options) {
+async function registerCommands(options: Context) {
   const { application_id, guild_id, bot_token, commands } = options;
   const body = commands.map((command) => {
     const rs = new RenderState();

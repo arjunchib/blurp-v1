@@ -5,11 +5,11 @@ import {
 } from "../deps.ts";
 import { RenderState } from "../structures/RenderState.ts";
 import { CommandState } from "../structures/CommandState.ts";
-import type { Options } from "../start.ts";
+import { Context } from "../structures/Context.ts";
 
 export async function onMessageComponent(
   interaction: APIMessageComponentInteraction,
-  ctx: Options
+  ctx: Context
 ): Promise<APIInteractionResponse> {
   const [hashValue, buttonId] = interaction.data.custom_id.split("-");
   const cs = CommandState.get(hashValue);

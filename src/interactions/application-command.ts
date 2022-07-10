@@ -6,11 +6,11 @@ import {
 } from "../deps.ts";
 import { RenderState } from "../structures/RenderState.ts";
 import { CommandState } from "../structures/CommandState.ts";
-import type { Options } from "../start.ts";
+import { Context } from "../structures/Context.ts";
 
 export async function onApplicationCommand(
   interaction: APIApplicationCommandInteraction,
-  ctx: Options
+  ctx: Context
 ): Promise<APIInteractionResponse> {
   if (interaction.data.type === ApplicationCommandType.ChatInput) {
     const command = ctx.commands.find((c) => c.name === interaction.data.name)!;
