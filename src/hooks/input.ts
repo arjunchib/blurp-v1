@@ -2,7 +2,7 @@ import { inputs, options } from "../globals.ts";
 
 export function useInput(
   name: string,
-  type: "number" | "string",
+  _type: "number" | "string",
   description: string,
   required = false
 ) {

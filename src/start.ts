@@ -1,5 +1,5 @@
 import { verifySignature, digestMessage } from "./util.ts";
-import { onInteraction } from "./handlers/interaction.ts";
+import { onInteraction } from "./interactions/interaction.ts";
 import {
   APIInteractionResponseCallbackData,
   serve,
@@ -67,7 +67,6 @@ async function registerCommands(options: Options) {
       options: [..._options.values()],
     };
   });
-  console.log(body);
   if (await tryCache("commandHash", body)) {
     console.log("Skipped updating commands");
     return;
@@ -87,6 +86,7 @@ async function registerCommands(options: Options) {
   console.log(j.errors);
 }
 
+// deno-lint-ignore no-explicit-any
 async function tryCache(key: string, data: any) {
   try {
     // Call localStorage early to bail if it does not exist

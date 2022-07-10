@@ -1,8 +1,8 @@
 export { start } from "./start.ts";
 
 // hooks
-export { useInput } from "./hooks/use-input.ts";
-export { useState } from "./hooks/use-state.ts";
+export { useInput } from "./hooks/input.ts";
+export { useState } from "./hooks/state.ts";
 
 // components
 export { ActionRow } from "./components/ActionRow.ts";
