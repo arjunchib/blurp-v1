@@ -4,9 +4,8 @@ import {
   ApplicationCommandType,
   APIInteractionResponse,
 } from "../deps.ts";
-import { props, RenderState } from "../globals.ts";
+import { CommandState, RenderState } from "../globals.ts";
 import type { Options } from "../start.ts";
-import { hash } from "../util.ts";
 
 export async function onApplicationCommand(
   interaction: APIApplicationCommandInteraction,
@@ -20,15 +19,12 @@ export async function onApplicationCommand(
     interaction.data.options?.forEach((opt) => rs.inputs.set(opt.name, opt));
     rs.mode = "input1";
     rs.runCommand(command);
-    const prop = {
+    rs.hash = await CommandState.set({
       name: command.name,
       inputs: [...rs.inputs],
       store: [...rs.store],
-    };
-    const customId = await hash(prop);
-    props.set(customId, prop);
+    });
     rs.mode = "input2";
-    rs.hash = customId;
     rs.buttonCount = 0;
     const data = rs.runCommand(command);
     return {

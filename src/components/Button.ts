@@ -4,7 +4,7 @@ import {
   ComponentType,
   ButtonStyle,
 } from "../deps.ts";
-import { RenderState, props as _props } from "../globals.ts";
+import { RenderState } from "../globals.ts";
 
 interface ButtonProps {
   children?: string;
