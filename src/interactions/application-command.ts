@@ -4,7 +4,8 @@ import {
   ApplicationCommandType,
   APIInteractionResponse,
 } from "../deps.ts";
-import { CommandState, RenderState } from "../globals.ts";
+import { RenderState } from "../structures/RenderState.ts";
+import { CommandState } from "../structures/CommandState.ts";
 import type { Options } from "../start.ts";
 
 export async function onApplicationCommand(

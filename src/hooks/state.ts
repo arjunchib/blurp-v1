@@ -1,4 +1,4 @@
-import { RenderState } from "../globals.ts";
+import { RenderState } from "../structures/RenderState.ts";
 
 export function useState<T>(key: string, initialValue: T) {
   let state = initialValue;

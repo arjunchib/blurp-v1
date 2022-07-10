@@ -6,7 +6,7 @@ import {
   validateRequest,
   json,
 } from "./deps.ts";
-import { RenderState } from "./globals.ts";
+import { RenderState } from "./structures/RenderState.ts";
 
 export type Command = () => APIInteractionResponseCallbackData;
 

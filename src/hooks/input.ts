@@ -1,4 +1,4 @@
-import { RenderState } from "../globals.ts";
+import { RenderState } from "../structures/RenderState.ts";
 
 export function useInput(
   name: string,
