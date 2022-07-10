@@ -6,9 +6,9 @@ import {
   validateRequest,
   json,
 } from "./deps.ts";
-import { options as _options } from "./globals.ts";
+import { RenderState } from "./globals.ts";
 
-type Command = () => APIInteractionResponseCallbackData;
+export type Command = () => APIInteractionResponseCallbackData;
 
 export interface Options {
   commands: Command[];
@@ -59,12 +59,13 @@ async function onRequest(request: Request, ctx: Options): Promise<Response> {
 async function registerCommands(options: Options) {
   const { application_id, guild_id, bot_token, commands } = options;
   const body = commands.map((command) => {
-    _options.clear();
-    command();
+    const rs = new RenderState();
+    rs.options.clear();
+    rs.runCommand(command);
     return {
       name: command.name,
       description: "Lorem ipsum...",
-      options: [..._options.values()],
+      options: [...rs.options.values()],
     };
   });
   if (await tryCache("commandHash", body)) {

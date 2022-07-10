@@ -4,7 +4,7 @@ import {
   ApplicationCommandType,
   APIInteractionResponse,
 } from "../deps.ts";
-import { inputs, store, state, props } from "../globals.ts";
+import { props, RenderState } from "../globals.ts";
 import type { Options } from "../start.ts";
 import { hash } from "../util.ts";
 
@@ -14,22 +14,23 @@ export async function onApplicationCommand(
 ): Promise<APIInteractionResponse> {
   if (interaction.data.type === ApplicationCommandType.ChatInput) {
     const command = ctx.commands.find((c) => c.name === interaction.data.name)!;
-    inputs.clear();
-    store.clear();
-    interaction.data.options?.forEach((opt) => inputs.set(opt.name, opt));
-    state.mode = "input1";
-    command();
+    const rs = new RenderState();
+    rs.inputs.clear();
+    rs.store.clear();
+    interaction.data.options?.forEach((opt) => rs.inputs.set(opt.name, opt));
+    rs.mode = "input1";
+    rs.runCommand(command);
     const prop = {
       name: command.name,
-      inputs: [...inputs],
-      store: [...store],
+      inputs: [...rs.inputs],
+      store: [...rs.store],
     };
     const customId = await hash(prop);
     props.set(customId, prop);
-    state.mode = "input2";
-    state.hash = customId;
-    state.buttonCount = 0;
-    const data = command();
+    rs.mode = "input2";
+    rs.hash = customId;
+    rs.buttonCount = 0;
+    const data = rs.runCommand(command);
     return {
       type: InteractionResponseType.ChannelMessageWithSource,
       data,

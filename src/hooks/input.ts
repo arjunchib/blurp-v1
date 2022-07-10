@@ -1,4 +1,4 @@
-import { inputs, options } from "../globals.ts";
+import { RenderState } from "../globals.ts";
 
 export function useInput(
   name: string,
@@ -6,8 +6,9 @@ export function useInput(
   description: string,
   required = false
 ) {
-  options.set(name, { name, type: 3, description, required });
-  const option = inputs?.get(name);
+  const rs = RenderState.active!;
+  rs.options.set(name, { name, type: 3, description, required });
+  const option = rs.inputs?.get(name);
   if (option && "value" in option) {
     return option.value;
   }

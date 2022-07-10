@@ -4,7 +4,7 @@ import {
   ComponentType,
   ButtonStyle,
 } from "../deps.ts";
-import { state, props as _props } from "../globals.ts";
+import { RenderState, props as _props } from "../globals.ts";
 
 interface ButtonProps {
   children?: string;
@@ -12,13 +12,14 @@ interface ButtonProps {
 }
 
 export function Button(props: ButtonProps): APIButtonComponentWithCustomId {
-  if (state.mode === "output1" && state.buttonCount === state.buttonClicked) {
-    state.buttonFn = props.onClick!;
+  const rs = RenderState.active!;
+  if (rs.mode === "output1" && rs.buttonCount === rs.buttonClicked) {
+    rs.buttonFn = props.onClick!;
   }
   return {
     type: ComponentType.Button,
     style: ButtonStyle.Primary,
     label: props.children,
-    custom_id: `${state.hash}-${state.buttonCount++}`,
+    custom_id: `${rs.hash}-${rs.buttonCount++}`,
   };
 }

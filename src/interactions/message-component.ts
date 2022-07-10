@@ -3,7 +3,7 @@ import {
   APIMessageComponentInteraction,
   APIInteractionResponse,
 } from "../deps.ts";
-import { inputs, store, state, props } from "../globals.ts";
+import { RenderState, props } from "../globals.ts";
 import type { Options } from "../start.ts";
 import { hash } from "../util.ts";
 
@@ -14,38 +14,39 @@ export async function onMessageComponent(
   const [propHash, buttonId] = interaction.data.custom_id.split("-");
   const prop = props.get(propHash)!;
   const command = ctx.commands.find((c) => c.name === prop.name)!;
-  inputs.clear();
-  store.clear();
+  const rs = new RenderState();
+  rs.inputs.clear();
+  rs.store.clear();
   for (const [k, v] of prop.inputs) {
-    inputs.set(k, v);
+    rs.inputs.set(k, v);
   }
   for (const [k, v] of prop.store) {
-    store.set(k, v);
+    rs.store.set(k, v);
   }
-  state.buttonCount = 0;
-  state.mode = "output1";
-  state.buttonClicked = parseInt(buttonId);
-  command();
-  inputs.clear();
-  store.clear();
+  rs.buttonCount = 0;
+  rs.mode = "output1";
+  rs.buttonClicked = parseInt(buttonId);
+  rs.runCommand(command);
+  rs.inputs.clear();
+  rs.store.clear();
   for (const [k, v] of prop.inputs) {
-    inputs.set(k, v);
+    rs.inputs.set(k, v);
   }
   for (const [k, v] of prop.store) {
-    store.set(k, v);
+    rs.store.set(k, v);
   }
-  state.buttonFn();
+  rs.buttonFn();
   const newProp = {
     name: command.name,
-    inputs: [...inputs],
-    store: [...store],
+    inputs: [...rs.inputs],
+    store: [...rs.store],
   };
   const customId = await hash(newProp);
   props.set(customId, newProp);
-  state.hash = customId;
-  state.buttonCount = 0;
-  state.mode = "output2";
-  const data = command();
+  rs.hash = customId;
+  rs.buttonCount = 0;
+  rs.mode = "output2";
+  const data = rs.runCommand(command);
   return {
     type: InteractionResponseType.UpdateMessage,
     data,
