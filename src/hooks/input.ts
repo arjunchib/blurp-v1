@@ -1,15 +1,41 @@
 import { RenderState } from "../structures/RenderState.ts";
+import {
+  ApplicationCommandOptionType,
+  APIApplicationCommandInteractionDataBasicOption,
+} from "../deps.ts";
 
-export function useInput(
-  name: string,
-  _type: "number" | "string",
-  description: string,
-  required = false
-) {
+type InputType = "string" | "number";
+
+interface InputOptions<T extends InputType> {
+  type: T;
+  name: string;
+  description: string;
+  required?: boolean;
+}
+
+type InputTypeValue<T extends InputType> = T extends "string" ? string : number;
+
+export function useInput<T extends InputType>(
+  options: InputOptions<T>
+): InputTypeValue<T> {
   const rs = RenderState.active!;
-  rs.options.set(name, { name, type: 3, description, required });
-  const option = rs.inputs?.get(name);
-  if (option && "value" in option) {
-    return option.value;
+  let { name, type, description, required } = options;
+  if (required == null) {
+    required = true;
   }
+  let typeNum;
+  if (type === "string") {
+    typeNum = ApplicationCommandOptionType.String;
+  } else if (type === "number") {
+    typeNum = ApplicationCommandOptionType.Number;
+  }
+  rs.options.set(name, {
+    name,
+    type: typeNum as number,
+    description,
+    required,
+  });
+  const option = rs.inputs?.get(name)!;
+  return (option as APIApplicationCommandInteractionDataBasicOption)
+    ?.value as InputTypeValue<T>;
 }

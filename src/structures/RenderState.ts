@@ -1,19 +1,14 @@
 import {
   APIApplicationCommandInteractionDataOption,
-  RESTPostAPIApplicationCommandsJSONBody,
+  APIApplicationCommandBasicOption,
 } from "../deps.ts";
 import { Command } from "./Command.ts";
-
-type Flatten<Type> = Type extends Array<infer Item> ? Item : Type;
 
 // Represent state for rendering commands
 // 1 state per render
 export class RenderState {
   inputs = new Map<string, APIApplicationCommandInteractionDataOption>();
-  options = new Map<
-    string,
-    Flatten<RESTPostAPIApplicationCommandsJSONBody["options"]>
-  >();
+  options = new Map<string, APIApplicationCommandBasicOption>();
   // deno-lint-ignore no-explicit-any
   store = new Map<string, any>();
   mode = "input1";
