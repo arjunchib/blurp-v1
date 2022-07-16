@@ -1,12 +1,13 @@
 import { Message, ActionRow, Button, useState, useInput } from "blurp";
 
 export default function counter() {
-  const input = useInput({
+  const start = useInput({
     name: "start",
     type: "number",
     description: "Value to start at",
+    minValue: 2,
   });
-  const [count, setCount] = useState("count", input || 0);
+  const [count, setCount] = useState("count", start || 0);
   return (
     <Message>
       count: {count}

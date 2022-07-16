@@ -4,20 +4,37 @@ import {
   APIApplicationCommandInteractionDataBasicOption,
 } from "../deps.ts";
 
-type InputType = "string" | "number";
+// type InputType =
+//   | "string"
+//   | "integer"
+//   | "boolean"
+//   | "user"
+//   | "channel"
+//   | "role"
+//   | "mentionable"
+//   | "number"
+//   | "attachment";
 
-interface InputOptions<T extends InputType> {
-  type: T;
+interface BaseInputOptions {
   name: string;
   description: string;
+  type: "string" | "number";
   required?: boolean;
 }
 
-type InputTypeValue<T extends InputType> = T extends "string" ? string : number;
+interface StringInputOptions extends BaseInputOptions {
+  type: "string";
+  minLength?: number;
+}
 
-export function useInput<T extends InputType>(
-  options: InputOptions<T>
-): InputTypeValue<T> {
+interface NumberInputOptions extends BaseInputOptions {
+  type: "number";
+  minValue?: number;
+}
+
+export function useInput(options: StringInputOptions): string;
+export function useInput(options: NumberInputOptions): number;
+export function useInput(options: BaseInputOptions): unknown {
   const rs = RenderState.active!;
   let { name, type, description, required } = options;
   if (required == null) {
@@ -36,6 +53,5 @@ export function useInput<T extends InputType>(
     required,
   });
   const option = rs.inputs?.get(name)!;
-  return (option as APIApplicationCommandInteractionDataBasicOption)
-    ?.value as InputTypeValue<T>;
+  return (option as APIApplicationCommandInteractionDataBasicOption)?.value;
 }
