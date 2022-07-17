@@ -1,5 +1,6 @@
-import Base64 from "./commands/counter.tsx";
+import counter from "./commands/counter.tsx";
+import justwatch from "./commands/justwatch.tsx";
 
-const commands = [Base64];
+const commands = [counter, justwatch];
 
 export default commands;

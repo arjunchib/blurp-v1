@@ -20,12 +20,13 @@ export async function onApplicationCommand(
     interaction.data.options?.forEach((opt) => rs.inputs.set(opt.name, opt));
     rs.mode = "input1";
     rs.runCommand(command);
+    rs.mode = "input2";
+    await rs.invokeFn();
     rs.hash = await CommandState.set({
       name: command.name,
       inputs: [...rs.inputs],
       store: [...rs.store],
     });
-    rs.mode = "input2";
     rs.buttonCount = 0;
     const data = rs.runCommand(command);
     return {

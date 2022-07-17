@@ -16,6 +16,7 @@ export class RenderState {
   buttonCount = 0;
   buttonClicked = -1;
   buttonFn = () => {};
+  invokeFn = async () => {};
 
   static active: RenderState | undefined;
 
