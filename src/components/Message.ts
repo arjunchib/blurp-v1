@@ -17,7 +17,6 @@ function isActionRow(
 export function Message(
   props: MessageProps
 ): APIInteractionResponseCallbackData {
-  console.log(props);
   if (props.children === undefined) {
     props.children = "";
   }

@@ -29,7 +29,6 @@ export async function onApplicationCommand(
     });
     rs.buttonCount = 0;
     const data = rs.runCommand(command);
-    console.log(JSON.stringify(data, null, 2));
     return {
       type: InteractionResponseType.ChannelMessageWithSource,
       data,

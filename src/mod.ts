@@ -11,7 +11,6 @@ export { Button } from "./components/Button.ts";
 export { Message } from "./components/Message.ts";
 
 export const h = (tag: string | Function, props: object, ...children: any) => {
-  console.log(tag, props, children);
   if (typeof tag === "function") {
     return tag({ ...props, children });
   } else {
