@@ -1,4 +1,6 @@
-import { Message, useState, useInput, onInvoke } from "blurp";
+/** @jsx h */
+
+import { Message, useState, useInput, onInvoke, h } from "blurp";
 
 // {
 //   node: {

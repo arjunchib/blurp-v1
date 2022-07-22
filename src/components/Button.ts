@@ -7,7 +7,7 @@ import {
 import { RenderState } from "../structures/RenderState.ts";
 
 interface ButtonProps {
-  children?: string;
+  children?: string[];
   onClick?: () => void;
 }
 
@@ -19,7 +19,7 @@ export function Button(props: ButtonProps): APIButtonComponentWithCustomId {
   return {
     type: ComponentType.Button,
     style: ButtonStyle.Primary,
-    label: props.children,
+    label: props.children?.join(""),
     custom_id: `${rs.hash}-${rs.buttonCount++}`,
   };
 }

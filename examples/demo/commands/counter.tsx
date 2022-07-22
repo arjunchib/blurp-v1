@@ -1,4 +1,6 @@
-import { Message, ActionRow, Button, useState, useInput } from "blurp";
+/** @jsx h */
+
+import { Message, ActionRow, Button, useState, useInput, h } from "blurp";
 
 export default function counter() {
   const start = useInput({
