@@ -3,11 +3,12 @@ import {
   APIApplicationCommandInteraction,
   ApplicationCommandType,
   APIInteractionResponse,
+  APIModalInteractionResponseCallbackData,
+  APIInteractionResponseCallbackData,
 } from "../deps.ts";
 import { RenderState } from "../structures/RenderState.ts";
 import { CommandState } from "../structures/CommandState.ts";
 import { Context } from "../structures/Context.ts";
-import { Command } from "../structures/Command.ts";
 
 export async function onApplicationCommand(
   interaction: APIApplicationCommandInteraction,
@@ -35,10 +36,25 @@ export async function onApplicationCommand(
     });
     rs.buttonCount = 0;
     const data = rs.runCommand(command);
-    return {
-      type: InteractionResponseType.ChannelMessageWithSource,
-      data,
-    };
+    if (isModal(data)) {
+      return {
+        type: InteractionResponseType.Modal,
+        data,
+      };
+    } else {
+      return {
+        type: InteractionResponseType.ChannelMessageWithSource,
+        data,
+      };
+    }
   }
   throw new Error("Invalid request");
+}
+
+function isModal(
+  data:
+    | APIInteractionResponseCallbackData
+    | APIModalInteractionResponseCallbackData
+): data is APIModalInteractionResponseCallbackData {
+  return "title" in data;
 }

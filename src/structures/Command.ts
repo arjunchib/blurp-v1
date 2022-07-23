@@ -1,3 +1,8 @@
-import { APIInteractionResponseCallbackData } from "../deps.ts";
+import {
+  APIInteractionResponseCallbackData,
+  APIModalInteractionResponseCallbackData,
+} from "../deps.ts";
 
-export type Command = () => APIInteractionResponseCallbackData;
+export type Command = () =>
+  | APIInteractionResponseCallbackData
+  | APIModalInteractionResponseCallbackData;

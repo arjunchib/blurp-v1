@@ -2,6 +2,8 @@ import {
   InteractionResponseType,
   APIMessageComponentInteraction,
   APIInteractionResponse,
+  APIInteractionResponseCallbackData,
+  APIModalInteractionResponseCallbackData,
 } from "../deps.ts";
 import { RenderState } from "../structures/RenderState.ts";
 import { CommandState } from "../structures/CommandState.ts";
@@ -44,8 +46,17 @@ export async function onMessageComponent(
   rs.buttonCount = 0;
   rs.mode = "output2";
   const data = rs.runCommand(cs.command);
+  if (isModal(data)) throw new Error("Modal not supported!");
   return {
     type: InteractionResponseType.UpdateMessage,
     data,
   };
+}
+
+function isModal(
+  data:
+    | APIInteractionResponseCallbackData
+    | APIModalInteractionResponseCallbackData
+): data is APIModalInteractionResponseCallbackData {
+  return "title" in data;
 }

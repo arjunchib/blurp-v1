@@ -1,7 +1,7 @@
-import { APIInteractionResponseCallbackData, ComponentType } from "../deps.ts";
+import { APIInteractionResponseCallbackData, APIMessageActionRowComponent, ComponentType } from "../deps.ts";
 import type { ActionRow } from "./ActionRow.ts";
 
-type Child = string | ReturnType<typeof ActionRow>;
+type Child = string | ReturnType<typeof ActionRow<APIMessageActionRowComponent>>;
 
 interface MessageProps {
   children?: Child[] | Child;
@@ -10,7 +10,7 @@ interface MessageProps {
 function isActionRow(
   // deno-lint-ignore no-explicit-any
   component: any
-): component is ReturnType<typeof ActionRow> {
+): component is ReturnType<typeof ActionRow<APIMessageActionRowComponent>> {
   return component["type"] === ComponentType.ActionRow;
 }
 

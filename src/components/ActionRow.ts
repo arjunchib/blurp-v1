@@ -1,25 +1,37 @@
 import {
   APIActionRowComponent,
-  APIMessageActionRowComponent,
   ComponentType,
   APIButtonComponent,
+  APIActionRowComponentTypes,
+  APITextInputComponent,
 } from "../deps.ts";
 
-interface ActionRowProps {
+interface ActionRowMessageProps {
   children?: APIButtonComponent | APIButtonComponent[];
 }
 
-export function ActionRow(
-  props: ActionRowProps
-): APIActionRowComponent<APIMessageActionRowComponent> {
+interface ActionRowModalProps {
+  children?: APITextInputComponent | APITextInputComponent[];
+}
+
+type ActionRowProps<T> = T extends APITextInputComponent
+  ? ActionRowModalProps
+  : ActionRowMessageProps;
+
+export function ActionRow<T extends APIActionRowComponentTypes>(
+  props: ActionRowProps<T>
+): APIActionRowComponent<T> {
+  let children: (APIButtonComponent | APITextInputComponent)[];
   if (props.children === undefined) {
     props.children = [];
   }
   if (!Array.isArray(props.children)) {
-    props.children = [props.children];
+    children = [props.children];
+  } else {
+    children = props.children;
   }
   return {
     type: ComponentType.ActionRow,
-    components: props.children,
+    components: children! as T[],
   };
 }
