@@ -1,10 +1,12 @@
 import { APIApplicationCommandInteractionDataOption } from "../deps.ts";
 import { hash } from "../util.ts";
+import { Command } from "./Command.ts";
 
 // Represents state for retained data between commands
 // 1 state per command shape (i.e. multiple commands can share state)
 export class CommandState {
   private constructor(
+    public command: Command,
     public name: string,
     public inputs: [string, APIApplicationCommandInteractionDataOption][],
     // deno-lint-ignore no-explicit-any

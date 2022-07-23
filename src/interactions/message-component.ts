@@ -9,11 +9,10 @@ import { Context } from "../structures/Context.ts";
 
 export async function onMessageComponent(
   interaction: APIMessageComponentInteraction,
-  ctx: Context
+  _ctx: Context
 ): Promise<APIInteractionResponse> {
   const [hashValue, buttonId] = interaction.data.custom_id.split("-");
   const cs = CommandState.get(hashValue);
-  const command = ctx.commands.find((c) => c.name === cs.name)!;
   const rs = new RenderState();
   rs.inputs.clear();
   rs.store.clear();
@@ -26,7 +25,7 @@ export async function onMessageComponent(
   rs.buttonCount = 0;
   rs.mode = "output1";
   rs.buttonClicked = parseInt(buttonId);
-  rs.runCommand(command);
+  rs.runCommand(cs.command);
   rs.inputs.clear();
   rs.store.clear();
   for (const [k, v] of cs.inputs) {
@@ -37,13 +36,14 @@ export async function onMessageComponent(
   }
   rs.buttonFn();
   rs.hash = await CommandState.set({
-    name: command.name,
+    command: cs.command,
+    name: cs.command.name,
     inputs: [...rs.inputs],
     store: [...rs.store],
   });
   rs.buttonCount = 0;
   rs.mode = "output2";
-  const data = rs.runCommand(command);
+  const data = rs.runCommand(cs.command);
   return {
     type: InteractionResponseType.UpdateMessage,
     data,

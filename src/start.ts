@@ -1,8 +1,15 @@
 import { verifySignature, digestMessage } from "./util.ts";
 import { onInteraction } from "./interactions/interaction.ts";
-import { serve, validateRequest, json } from "./deps.ts";
+import {
+  serve,
+  validateRequest,
+  json,
+  ApplicationCommandOptionType,
+} from "./deps.ts";
 import { RenderState } from "./structures/RenderState.ts";
 import { Context } from "./structures/Context.ts";
+import { Command } from "./structures/Command.ts";
+import { Group } from "./structures/Group.ts";
 
 export function start(options: Context) {
   try {
@@ -45,16 +52,7 @@ async function onRequest(request: Request, ctx: Context): Promise<Response> {
 
 async function registerCommands(options: Context) {
   const { application_id, guild_id, bot_token, commands } = options;
-  const body = commands.map((command) => {
-    const rs = new RenderState();
-    rs.options.clear();
-    rs.runCommand(command);
-    return {
-      name: command.name,
-      description: "Lorem ipsum...",
-      options: [...rs.options.values()],
-    };
-  });
+  const body = commands.map(createCommand);
   if (await tryCache("commandHash", body)) {
     console.log("Skipped updating commands");
     return;
@@ -71,7 +69,29 @@ async function registerCommands(options: Context) {
     }
   );
   const j = await res.json();
-  console.log(j.errors);
+  console.error(JSON.stringify(j.errors, null, 2));
+}
+
+function createCommand(command: Command | Group): unknown {
+  if (typeof command === "function") {
+    const rs = new RenderState();
+    rs.options.clear();
+    rs.runCommand(command);
+    return {
+      type: 1, // works because command and subcommand are both 1
+      name: command.name,
+      description: "Lorem ipsum...",
+      options: [...rs.options.values()],
+    };
+  } else {
+    const { name, description } = command;
+    const options = command.subcommands.map(createCommand);
+    return {
+      name,
+      description,
+      options,
+    };
+  }
 }
 
 // deno-lint-ignore no-explicit-any
