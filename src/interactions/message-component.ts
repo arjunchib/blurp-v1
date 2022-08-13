@@ -1,62 +1,33 @@
+import { isMessageComponentButtonInteraction } from "https://deno.land/x/discord_api_types@0.36.1/utils/v10.ts";
 import {
-  InteractionResponseType,
-  APIMessageComponentInteraction,
   APIInteractionResponse,
-  APIInteractionResponseCallbackData,
-  APIModalInteractionResponseCallbackData,
+  APIMessageComponentInteraction,
+  InteractionResponseType,
 } from "../deps.ts";
-import { RenderState } from "../structures/RenderState.ts";
-import { CommandState } from "../structures/CommandState.ts";
-import { Context } from "../structures/Context.ts";
+import { buttonClicks } from "../store.ts";
 
 export async function onMessageComponent(
-  interaction: APIMessageComponentInteraction,
-  _ctx: Context
+  interaction: APIMessageComponentInteraction
 ): Promise<APIInteractionResponse> {
-  const [hashValue, buttonId] = interaction.data.custom_id.split("-");
-  const cs = CommandState.get(hashValue);
-  const rs = new RenderState();
-  rs.inputs.clear();
-  rs.store.clear();
-  for (const [k, v] of cs.inputs) {
-    rs.inputs.set(k, v);
+  if (isMessageComponentButtonInteraction(interaction)) {
+    const buttonClick = [...buttonClicks].find(([pattern, _]) =>
+      interaction.data.custom_id.startsWith(pattern)
+    );
+    if (!buttonClick) {
+      return {
+        type: InteractionResponseType.ChannelMessageWithSource,
+        data: {
+          content: "Error: could not find command",
+        },
+      };
+    }
+    const hook = buttonClick[1];
+    return await hook(interaction);
   }
-  for (const [k, v] of cs.store) {
-    rs.store.set(k, v);
-  }
-  rs.buttonCount = 0;
-  rs.mode = "output1";
-  rs.buttonClicked = parseInt(buttonId);
-  rs.runCommand(cs.command);
-  rs.inputs.clear();
-  rs.store.clear();
-  for (const [k, v] of cs.inputs) {
-    rs.inputs.set(k, v);
-  }
-  for (const [k, v] of cs.store) {
-    rs.store.set(k, v);
-  }
-  rs.buttonFn();
-  rs.hash = await CommandState.set({
-    command: cs.command,
-    name: cs.command.name,
-    inputs: [...rs.inputs],
-    store: [...rs.store],
-  });
-  rs.buttonCount = 0;
-  rs.mode = "output2";
-  const data = rs.runCommand(cs.command);
-  if (isModal(data)) throw new Error("Modal not supported!");
   return {
-    type: InteractionResponseType.UpdateMessage,
-    data,
+    type: InteractionResponseType.ChannelMessageWithSource,
+    data: {
+      content: "Error: could not find command",
+    },
   };
-}
-
-function isModal(
-  data:
-    | APIInteractionResponseCallbackData
-    | APIModalInteractionResponseCallbackData
-): data is APIModalInteractionResponseCallbackData {
-  return "title" in data;
 }

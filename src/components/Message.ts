@@ -1,34 +1,50 @@
-import { APIInteractionResponseCallbackData, APIMessageActionRowComponent, ComponentType } from "../deps.ts";
-import type { ActionRow } from "./ActionRow.ts";
+import {
+  APIActionRowComponent,
+  APIInteractionResponseChannelMessageWithSource,
+  APIMessageActionRowComponent,
+  ComponentType,
+  InteractionResponseType,
+} from "../deps.ts";
 
-type Child = string | ReturnType<typeof ActionRow<APIMessageActionRowComponent>>;
-
-interface MessageProps {
-  children?: Child[] | Child;
+interface Stingifiable {
+  toString(): string;
 }
 
+interface MessageProps {}
+
+type MessageChildren = (
+  | APIActionRowComponent<APIMessageActionRowComponent>
+  | Stingifiable
+)[];
+
 function isActionRow(
-  // deno-lint-ignore no-explicit-any
-  component: any
-): component is ReturnType<typeof ActionRow<APIMessageActionRowComponent>> {
-  return component["type"] === ComponentType.ActionRow;
+  value: unknown
+): value is APIActionRowComponent<APIMessageActionRowComponent> {
+  return !!(
+    value &&
+    typeof value === "object" &&
+    Reflect.get(value, "type") === ComponentType.ActionRow
+  );
 }
 
 export function Message(
-  props: MessageProps
-): APIInteractionResponseCallbackData {
-  if (props.children === undefined) {
-    props.children = "";
-  }
-  if (!Array.isArray(props.children)) {
-    props.children = [props.children];
-  }
-  const content = props.children
-    ?.filter((child) => !isActionRow(child))
-    .join("");
-  const components = props.children?.filter(isActionRow);
+  _props: MessageProps,
+  children: MessageChildren
+): APIInteractionResponseChannelMessageWithSource {
+  let content = "";
+  const components: APIActionRowComponent<APIMessageActionRowComponent>[] = [];
+  children.forEach((child) => {
+    if (isActionRow(child)) {
+      components.push(child);
+    } else {
+      content += child;
+    }
+  });
   return {
-    content,
-    components,
+    type: InteractionResponseType.ChannelMessageWithSource,
+    data: {
+      content,
+      components,
+    },
   };
 }

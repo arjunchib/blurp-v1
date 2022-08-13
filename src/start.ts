@@ -1,26 +1,24 @@
 import { verifySignature, digestMessage } from "./util.ts";
-import { onInteraction } from "./interactions/interaction.ts";
 import {
   serve,
   validateRequest,
   json,
-  ApplicationCommandOptionType,
+  RESTPutAPIApplicationCommandsJSONBody,
 } from "./deps.ts";
-import { RenderState } from "./structures/RenderState.ts";
-import { Context } from "./structures/Context.ts";
-import { Command } from "./structures/Command.ts";
-import { Group } from "./structures/Group.ts";
+import { StartOptions } from "./interfaces.ts";
+import { slashCommands } from "./store.ts";
+import { onInteraction } from "./interactions/interaction.ts";
 
-export function start(options: Context) {
+export function start(options: StartOptions) {
   try {
     registerCommands(options);
-    serve({ "/": (req) => onRequest(req, options) });
+    serve({ "/": (req) => onRequest(req) });
   } catch (e) {
     console.error(e);
   }
 }
 
-async function onRequest(request: Request, ctx: Context): Promise<Response> {
+async function onRequest(request: Request): Promise<Response> {
   // validateRequest() ensures that a request is of POST method and
   // has the following headers.
   const { error } = await validateRequest(request, {
@@ -40,7 +38,7 @@ async function onRequest(request: Request, ctx: Context): Promise<Response> {
 
   // Handle interaction if request is a discord interaction event
   try {
-    const res = await onInteraction(JSON.parse(body), ctx);
+    const res = await onInteraction(JSON.parse(body));
     return json(res);
   } catch (e) {
     console.error(e);
@@ -50,15 +48,20 @@ async function onRequest(request: Request, ctx: Context): Promise<Response> {
   }
 }
 
-async function registerCommands(options: Context) {
-  const { application_id, guild_id, bot_token, commands } = options;
-  const body = commands.map(createCommand);
-  if (await tryCache("commandHash", body)) {
-    console.log("Skipped updating commands");
-    return;
-  }
+function isDefined<T>(value: T | null | undefined): value is T {
+  return Boolean(value);
+}
+
+async function registerCommands(options: StartOptions) {
+  const { application_id, guild_id, bot_token } = options;
+  const body: RESTPutAPIApplicationCommandsJSONBody = slashCommands;
+  console.log(body);
+  // if (await tryCache("commandHash", body)) {
+  //   console.log("Skipped updating commands");
+  //   return;
+  // }
   const res = await fetch(
-    `https://discord.com/api/v9/applications/${application_id}/guilds/${guild_id}/commands`,
+    `https://discord.com/api/v10/applications/${application_id}/guilds/${guild_id}/commands`,
     {
       method: "PUT",
       headers: {
@@ -69,47 +72,5 @@ async function registerCommands(options: Context) {
     }
   );
   const j = await res.json();
-  console.error(JSON.stringify(j.errors, null, 2));
-}
-
-function createCommand(command: Command | Group): unknown {
-  if (typeof command === "function") {
-    const rs = new RenderState();
-    rs.options.clear();
-    rs.runCommand(command);
-    return {
-      type: 1, // works because command and subcommand are both 1
-      name: command.name,
-      description: "Lorem ipsum...",
-      options: [...rs.options.values()],
-    };
-  } else {
-    const { name, description } = command;
-    const options = command.subcommands.map(createCommand);
-    return {
-      name,
-      description,
-      options,
-    };
-  }
-}
-
-// deno-lint-ignore no-explicit-any
-async function tryCache(key: string, data: any) {
-  try {
-    // Call localStorage early to bail if it does not exist
-    const storedHash = localStorage.getItem(key);
-    const hash = await digestMessage(JSON.stringify(data));
-    if (storedHash === hash) {
-      return true;
-    }
-    localStorage.setItem(key, hash);
-    return false;
-  } catch (e) {
-    if (e instanceof ReferenceError) {
-      return false;
-    } else {
-      throw e;
-    }
-  }
+  console.error(JSON.stringify(j, null, 2));
 }

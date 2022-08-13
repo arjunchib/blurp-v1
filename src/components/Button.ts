@@ -1,25 +1,44 @@
-import {
-  // APIButtonComponent,
-  APIButtonComponentWithCustomId,
-  ComponentType,
-  ButtonStyle,
-} from "../deps.ts";
-import { RenderState } from "../structures/RenderState.ts";
+import { APIButtonComponent, ButtonStyle, ComponentType } from "../deps.ts";
+import { CustomData } from "../helpers/CustomData.ts";
 
-interface ButtonProps {
-  children?: string[];
-  onClick?: () => void;
+interface ButtonPropsBase {}
+
+interface ButtonPropsCustomId extends ButtonPropsBase {
+  customId: string | CustomData;
+  style: "Primary" | "Secondary" | "Success" | "Danger";
 }
 
-export function Button(props: ButtonProps): APIButtonComponentWithCustomId {
-  const rs = RenderState.active!;
-  if (rs.mode === "output1" && rs.buttonCount === rs.buttonClicked) {
-    rs.buttonFn = props.onClick!;
-  }
-  return {
+interface ButtonPropsLink extends ButtonPropsBase {
+  url: string;
+  style: "Link";
+}
+
+type ButtonChildren = string[] | string;
+
+export function Button(
+  props: ButtonPropsCustomId | ButtonPropsLink,
+  children: ButtonChildren
+): APIButtonComponent {
+  // Candidate for `satisfies` and `as`
+  const baseButton = {
     type: ComponentType.Button,
-    style: ButtonStyle.Primary,
-    label: props.children?.join(""),
-    custom_id: `${rs.hash}-${rs.buttonCount++}`,
-  };
+    label: Array.isArray(children) ? children.join("") : children,
+  } as const;
+  if (props.style === "Link") {
+    return {
+      ...baseButton,
+      style: ButtonStyle.Link,
+      url: props.url,
+    };
+  } else {
+    const custom_id =
+      typeof props.customId === "string"
+        ? props.customId
+        : props.customId.toString();
+    return {
+      ...baseButton,
+      custom_id,
+      style: ButtonStyle[props.style],
+    };
+  }
 }
