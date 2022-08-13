@@ -1,6 +1,7 @@
 import {
   APIActionRowComponent,
   APIInteractionResponseChannelMessageWithSource,
+  APIInteractionResponseUpdateMessage,
   APIMessageActionRowComponent,
   ComponentType,
   InteractionResponseType,
@@ -10,7 +11,9 @@ interface Stingifiable {
   toString(): string;
 }
 
-interface MessageProps {}
+interface MessageProps {
+  update?: boolean;
+}
 
 type MessageChildren = (
   | APIActionRowComponent<APIMessageActionRowComponent>
@@ -28,9 +31,11 @@ function isActionRow(
 }
 
 export function Message(
-  _props: MessageProps,
+  props: MessageProps,
   children: MessageChildren
-): APIInteractionResponseChannelMessageWithSource {
+):
+  | APIInteractionResponseChannelMessageWithSource
+  | APIInteractionResponseUpdateMessage {
   let content = "";
   const components: APIActionRowComponent<APIMessageActionRowComponent>[] = [];
   children.forEach((child) => {
@@ -40,8 +45,11 @@ export function Message(
       content += child;
     }
   });
+  const type = props.update
+    ? InteractionResponseType.UpdateMessage
+    : InteractionResponseType.ChannelMessageWithSource;
   return {
-    type: InteractionResponseType.ChannelMessageWithSource,
+    type,
     data: {
       content,
       components,

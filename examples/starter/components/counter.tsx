@@ -44,7 +44,7 @@ export default class Counter implements OnChatInput {
   @ButtonClick("up;") up(interaction: APIMessageComponentButtonInteraction) {
     const data = new CustomData(interaction.data.custom_id);
     this.i = parseInt(data.get("i") ?? "0") + 1;
-    return this.render();
+    return this.render(true);
   }
 
   @ButtonClick("down;") down(
@@ -52,12 +52,12 @@ export default class Counter implements OnChatInput {
   ) {
     const data = new CustomData(interaction.data.custom_id);
     this.i = parseInt(data.get("i") ?? "0") - 1;
-    return this.render();
+    return this.render(true);
   }
 
-  private render() {
+  private render(update = false) {
     return (
-      <Message>
+      <Message update>
         Value: {this.i}
         <ActionRow>
           <Button
