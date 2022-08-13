@@ -6,6 +6,8 @@ export * from "./interfaces.ts";
 export { Message } from "./components/Message.ts";
 export { ActionRow } from "./components/ActionRow.ts";
 export { Button } from "./components/Button.ts";
+export { SelectMenu } from "./components/SelectMenu.ts";
+export { SelectOption } from "./components/SelectOption.ts";
 
 // decorators
 export { SlashCommand } from "./decorators/SlashCommand.ts";

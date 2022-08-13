@@ -9,6 +9,8 @@ import {
   Message,
   ActionRow,
   Button,
+  SelectMenu,
+  SelectOption,
 } from "blurp";
 import {
   APIApplicationCommandInteractionDataStringOption,
@@ -72,6 +74,12 @@ export default class Counter implements OnChatInput {
           >
             Down
           </Button>
+        </ActionRow>
+        <ActionRow>
+          <SelectMenu customId="menu">
+            <SelectOption value="1">One</SelectOption>
+            <SelectOption value="2">Two</SelectOption>
+          </SelectMenu>
         </ActionRow>
       </Message>
     );
