@@ -6,6 +6,7 @@ import {
 } from "../deps.ts";
 import { onApplicationCommand } from "./application-command.ts";
 import { onMessageComponent } from "./message-component.ts";
+import { onModalSubmit } from "./modal-submit.ts";
 
 export async function onInteraction(
   interaction: APIInteraction
@@ -16,6 +17,8 @@ export async function onInteraction(
     return await onApplicationCommand(interaction);
   } else if (interaction.type === InteractionType.MessageComponent) {
     return await onMessageComponent(interaction);
+  } else if (interaction.type === InteractionType.ModalSubmit) {
+    return await onModalSubmit(interaction);
   }
-  throw new Error("Invalid request");
+  throw new Error("Request not handled yet");
 }

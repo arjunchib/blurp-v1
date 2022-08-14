@@ -11,7 +11,7 @@ import { onInteraction } from "./interactions/interaction.ts";
 
 export function start(options: StartOptions) {
   try {
-    registerCommands(options);
+    // registerCommands(options);
     serve({ "/": (req) => onRequest(req) });
   } catch (e) {
     console.error(e);
@@ -55,7 +55,7 @@ function isDefined<T>(value: T | null | undefined): value is T {
 async function registerCommands(options: StartOptions) {
   const { application_id, guild_id, bot_token } = options;
   const body: RESTPutAPIApplicationCommandsJSONBody = slashCommands;
-  console.log(body);
+  // console.log(body);
   // if (await tryCache("commandHash", body)) {
   //   console.log("Skipped updating commands");
   //   return;

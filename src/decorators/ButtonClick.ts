@@ -7,7 +7,6 @@ export function ButtonClick(customId: string) {
     propertyKey: string,
     descriptor: PropertyDescriptor
   ) {
-    console.log(target);
     const original = descriptor.value;
     // const command = new (target as CommandConstructor)();
     buttonClicks.set(customId, original.bind(target));

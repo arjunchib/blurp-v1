@@ -13,3 +13,4 @@ export const slashCommands =
 export const chatInputs = new Map<string, Hook>();
 export const buttonClicks = new Map<string, Hook>();
 export const selects = new Map<string, Hook>();
+export const modalSubmits = new Map<string, Hook>();

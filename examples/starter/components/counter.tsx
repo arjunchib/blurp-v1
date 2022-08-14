@@ -12,12 +12,16 @@ import {
   SelectMenu,
   SelectOption,
   Select,
+  Modal,
+  TextInput,
+  ModalSubmit,
 } from "blurp";
 import {
   APIApplicationCommandInteractionDataStringOption,
   APIChatInputApplicationCommandInteraction,
   APIMessageComponentButtonInteraction,
   APIMessageComponentSelectMenuInteraction,
+  APIModalSubmitInteraction,
 } from "../../../src/deps.ts";
 
 @SlashCommand({
@@ -59,10 +63,23 @@ export default class Counter implements OnChatInput {
     return this.render(true);
   }
 
+  @ButtonClick("openModal") openModal(
+    interaction: APIMessageComponentButtonInteraction
+  ) {
+    return this.renderModal();
+  }
+
   @Select("menu") select(
     interaction: APIMessageComponentSelectMenuInteraction
   ) {
     this.i = parseInt(interaction.data.values[0]);
+    return this.render(true);
+  }
+
+  @ModalSubmit("modal") modalSubmit(interaction: APIModalSubmitInteraction) {
+    this.i = parseInt(
+      interaction.data.components?.[0].components[0].value ?? "1"
+    );
     return this.render(true);
   }
 
@@ -83,6 +100,9 @@ export default class Counter implements OnChatInput {
           >
             Down
           </Button>
+          <Button style="Secondary" customId={new CustomData("openModal")}>
+            Open Modal
+          </Button>
         </ActionRow>
         <ActionRow>
           <SelectMenu customId="menu">
@@ -91,6 +111,18 @@ export default class Counter implements OnChatInput {
           </SelectMenu>
         </ActionRow>
       </Message>
+    );
+  }
+
+  private renderModal() {
+    return (
+      <Modal customId="modal" title="Pick your number!">
+        <ActionRow>
+          <TextInput customId="input" style="Short" label="Number">
+            1
+          </TextInput>
+        </ActionRow>
+      </Modal>
     );
   }
 }

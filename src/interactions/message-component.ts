@@ -19,6 +19,7 @@ const error = {
 export async function onMessageComponent(
   interaction: APIMessageComponentInteraction
 ): Promise<APIInteractionResponse> {
+  console.log(interaction);
   if (isMessageComponentButtonInteraction(interaction)) {
     const buttonClick = [...buttonClicks].find(([pattern, _]) =>
       interaction.data.custom_id.startsWith(pattern)
@@ -37,6 +38,8 @@ export async function onMessageComponent(
     }
     const hook = select[1];
     return await hook(interaction);
+  } else {
+    console.log(interaction);
   }
   return error;
 }
