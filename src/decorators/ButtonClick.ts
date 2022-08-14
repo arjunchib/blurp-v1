@@ -1,21 +1,12 @@
-import { CommandConstructor } from "../interfaces.ts";
-import { buttonClicks } from "../store.ts";
+import { hooks } from "../store.ts";
 
 export function ButtonClick(customId: string) {
   return function (
     target: unknown,
-    propertyKey: string,
+    _propertyKey: string,
     descriptor: PropertyDescriptor
   ) {
     const original = descriptor.value;
-    // const command = new (target as CommandConstructor)();
-    buttonClicks.set(customId, original.bind(target));
-
-    // descriptor.value = function (...args: unknown[]) {
-    //   console.log("params: ", ...args);
-    //   const result = original.call(this, ...args);
-    //   console.log("result: ", result);
-    //   return result;
-    // };
+    hooks.buttonClick.set(customId, original.bind(target));
   };
 }

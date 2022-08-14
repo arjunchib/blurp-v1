@@ -1,6 +1,7 @@
 // TweetNaCl is a cryptography library that we use to verify requests
 // from Discord.
 import nacl from "https://cdn.skypack.dev/tweetnacl@v1.0.3?dts";
+import { InteractionResponseType, MessageFlags } from "./deps.ts";
 
 /** Converts a hexadecimal string to Uint8Array. */
 export function hexToUint8Array(hex: string) {
@@ -47,3 +48,11 @@ export async function hash(data: any) {
     .join("");
   return hashHex;
 }
+
+export const errorMessage = {
+  type: InteractionResponseType.ChannelMessageWithSource,
+  data: {
+    flags: MessageFlags.Ephemeral,
+    content: "Error: could not find command",
+  },
+} as const;

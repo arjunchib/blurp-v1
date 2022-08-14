@@ -54,15 +54,13 @@ export default class Counter {
     return this.render();
   }
 
-  @ButtonClick("up;") up(interaction: APIMessageComponentButtonInteraction) {
+  @ButtonClick("up") up(interaction: APIMessageComponentButtonInteraction) {
     const data = new CustomData(interaction.data.custom_id);
     this.i = parseInt(data.get("i") ?? "0") + 1;
     return this.render(true);
   }
 
-  @ButtonClick("down;") down(
-    interaction: APIMessageComponentButtonInteraction
-  ) {
+  @ButtonClick("down") down(interaction: APIMessageComponentButtonInteraction) {
     const data = new CustomData(interaction.data.custom_id);
     this.i = parseInt(data.get("i") ?? "0") - 1;
     return this.render(true);
