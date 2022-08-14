@@ -12,6 +12,7 @@ export { SelectOption } from "./components/SelectOption.ts";
 // decorators
 export { SlashCommand } from "./decorators/SlashCommand.ts";
 export { ButtonClick } from "./decorators/ButtonClick.ts";
+export { Select } from "./decorators/Select.ts";
 
 // helpers
 export { CustomData } from "./helpers/CustomData.ts";

@@ -6,5 +6,6 @@
   "deno.enablePaths": ["./src"],
   "files.exclude": {
     "examples": true
-  }
+  },
+  "cSpell.words": ["Stringifiable"]
 }

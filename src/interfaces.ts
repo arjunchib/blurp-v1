@@ -24,3 +24,7 @@ export interface StartOptions {
   bot_token: string;
   guild_id?: string;
 }
+
+export interface Stringifiable {
+  toString(): string;
+}

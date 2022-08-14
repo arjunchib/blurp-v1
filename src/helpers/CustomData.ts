@@ -1,16 +1,18 @@
+import { Stringifiable } from "../interfaces.ts";
+
 export class CustomData extends Map<string, string> {
   name: string;
 
   // This order of the overloads generates better error message when
   // dataObject types mismatch
-  constructor(name: string, dataObject: Record<string, string>);
+  constructor(name: string, dataObject: Record<string, Stringifiable>);
   constructor(customId: string);
-  constructor(inputStr: string, dataObject?: Record<string, string>) {
+  constructor(inputStr: string, dataObject?: Record<string, Stringifiable>) {
     super();
     if (dataObject) {
       this.name = inputStr;
       for (const k in dataObject) {
-        this.set(k, dataObject[k]);
+        this.set(k, dataObject[k].toString());
       }
     } else {
       const parts = inputStr.split(";");

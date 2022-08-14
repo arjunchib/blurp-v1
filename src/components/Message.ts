@@ -6,10 +6,7 @@ import {
   ComponentType,
   InteractionResponseType,
 } from "../deps.ts";
-
-interface Stingifiable {
-  toString(): string;
-}
+import { Stringifiable } from "../interfaces.ts";
 
 interface MessageProps {
   update?: boolean;
@@ -17,7 +14,7 @@ interface MessageProps {
 
 type MessageChildren = (
   | APIActionRowComponent<APIMessageActionRowComponent>
-  | Stingifiable
+  | Stringifiable
 )[];
 
 function isActionRow(

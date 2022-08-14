@@ -11,11 +11,13 @@ import {
   Button,
   SelectMenu,
   SelectOption,
+  Select,
 } from "blurp";
 import {
   APIApplicationCommandInteractionDataStringOption,
   APIChatInputApplicationCommandInteraction,
   APIMessageComponentButtonInteraction,
+  APIMessageComponentSelectMenuInteraction,
 } from "../../../src/deps.ts";
 
 @SlashCommand({
@@ -57,6 +59,13 @@ export default class Counter implements OnChatInput {
     return this.render(true);
   }
 
+  @Select("menu") select(
+    interaction: APIMessageComponentSelectMenuInteraction
+  ) {
+    this.i = parseInt(interaction.data.values[0]);
+    return this.render(true);
+  }
+
   private render(update = false) {
     return (
       <Message update>
@@ -64,13 +73,13 @@ export default class Counter implements OnChatInput {
         <ActionRow>
           <Button
             style="Primary"
-            customId={new CustomData("up", { i: this.i.toString() })}
+            customId={new CustomData("up", { i: this.i })}
           >
             Up
           </Button>
           <Button
             style="Primary"
-            customId={new CustomData("down", { i: this.i.toString() })}
+            customId={new CustomData("down", { i: this.i })}
           >
             Down
           </Button>
