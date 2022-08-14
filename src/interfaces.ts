@@ -4,15 +4,7 @@ import {
   RESTPostAPIChatInputApplicationCommandsJSONBody,
 } from "./deps.ts";
 
-export interface OnChatInput {
-  onChatInput(
-    interaction: APIApplicationCommandInteraction
-  ): APIInteractionResponse | Promise<APIInteractionResponse>;
-}
-
-export interface Command extends Partial<OnChatInput> {
-  slashCommand?: RESTPostAPIChatInputApplicationCommandsJSONBody;
-}
+export interface Command {}
 
 export interface CommandConstructor {
   new (): Command;

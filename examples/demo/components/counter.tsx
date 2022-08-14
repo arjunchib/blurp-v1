@@ -1,7 +1,6 @@
 /** @jsx h */
 
 import {
-  OnChatInput,
   SlashCommand,
   CustomData,
   ButtonClick,
@@ -24,22 +23,28 @@ import {
   APIModalSubmitInteraction,
 } from "../../../src/deps.ts";
 
-@SlashCommand({
-  name: "counter",
-  description: "Keep track of a value",
-  options: [
-    {
-      name: "initial",
-      description: "starting value",
-      type: 3,
-      required: true,
-    },
-  ],
-})
-export default class Counter implements OnChatInput {
+function sleep(ms: number) {
+  return new Promise<void>((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
+export default class Counter {
   private i = 0;
 
-  onChatInput(interaction: APIChatInputApplicationCommandInteraction) {
+  @SlashCommand({
+    name: "counter",
+    description: "Keep track of a value",
+    options: [
+      {
+        name: "initial",
+        description: "starting value",
+        type: 3,
+        required: true,
+      },
+    ],
+  })
+  counter(interaction: APIChatInputApplicationCommandInteraction) {
     const initial = interaction.data.options?.find(
       (opt) => opt.name === "initial"
     ) as APIApplicationCommandInteractionDataStringOption;
@@ -69,6 +74,14 @@ export default class Counter implements OnChatInput {
     return this.renderModal();
   }
 
+  @ButtonClick("random") async random(
+    interaction: APIMessageComponentButtonInteraction
+  ) {
+    await sleep(1000);
+    this.i = Math.ceil(Math.random() * 10);
+    return this.render(true);
+  }
+
   @Select("menu") select(
     interaction: APIMessageComponentSelectMenuInteraction
   ) {
@@ -85,7 +98,7 @@ export default class Counter implements OnChatInput {
 
   private render(update = false) {
     return (
-      <Message update>
+      <Message update={update}>
         Value: {this.i}
         <ActionRow>
           <Button
@@ -102,6 +115,9 @@ export default class Counter implements OnChatInput {
           </Button>
           <Button style="Secondary" customId={new CustomData("openModal")}>
             Open Modal
+          </Button>
+          <Button style="Success" customId={new CustomData("random")}>
+            Random
           </Button>
         </ActionRow>
         <ActionRow>
