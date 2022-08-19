@@ -7,6 +7,7 @@ import {
 import { onApplicationCommand } from "./application-command.ts";
 import { onMessageComponent } from "./message-component.ts";
 import { onModalSubmit } from "./modal-submit.ts";
+import { onAutocomplete } from "./autocomplete.ts";
 
 export async function onInteraction(
   interaction: APIInteraction
@@ -19,6 +20,10 @@ export async function onInteraction(
     return await onMessageComponent(interaction);
   } else if (interaction.type === InteractionType.ModalSubmit) {
     return await onModalSubmit(interaction);
+  } else if (
+    interaction.type === InteractionType.ApplicationCommandAutocomplete
+  ) {
+    return await onAutocomplete(interaction);
   }
   throw new Error("Request not handled yet");
 }

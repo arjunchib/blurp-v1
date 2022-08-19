@@ -16,6 +16,7 @@ export { SlashCommand } from "./decorators/SlashCommand.ts";
 export { ButtonClick } from "./decorators/ButtonClick.ts";
 export { Select } from "./decorators/Select.ts";
 export { ModalSubmit } from "./decorators/ModalSubmit.ts";
+export { Autocomplete } from "./decorators/Autocomplete.ts";
 
 // helpers
 export { CustomData } from "./helpers/CustomData.ts";

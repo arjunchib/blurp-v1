@@ -14,13 +14,17 @@ import {
   Modal,
   TextInput,
   ModalSubmit,
+  Autocomplete,
 } from "blurp";
 import {
+  APIApplicationCommandAutocompleteInteraction,
+  APIApplicationCommandAutocompleteResponse,
   APIApplicationCommandInteractionDataStringOption,
   APIChatInputApplicationCommandInteraction,
   APIMessageComponentButtonInteraction,
   APIMessageComponentSelectMenuInteraction,
   APIModalSubmitInteraction,
+  InteractionResponseType,
 } from "../../../src/deps.ts";
 
 function sleep(ms: number) {
@@ -41,6 +45,7 @@ export default class Counter {
         description: "starting value",
         type: 3,
         required: true,
+        autocomplete: true,
       },
     ],
   })
@@ -52,6 +57,22 @@ export default class Counter {
       this.i = parseInt(initial.value);
     }
     return this.render();
+  }
+
+  @Autocomplete("initial") initialAutocomplete(
+    interaction: APIApplicationCommandAutocompleteInteraction
+  ): APIApplicationCommandAutocompleteResponse {
+    // interaction.data.options.find(opt => opt.name === 'initial'));
+    return {
+      type: InteractionResponseType.ApplicationCommandAutocompleteResult,
+      data: {
+        choices: [
+          { name: "1", value: "1" },
+          { name: "2", value: "2" },
+          { name: "3", value: "3" },
+        ],
+      },
+    };
   }
 
   @ButtonClick("up") up(interaction: APIMessageComponentButtonInteraction) {

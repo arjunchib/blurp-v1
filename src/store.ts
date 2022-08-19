@@ -1,8 +1,4 @@
-import {
-  APIInteraction,
-  APIInteractionResponse,
-  RESTPostAPIChatInputApplicationCommandsJSONBody,
-} from "./deps.ts";
+import { RESTPostAPIChatInputApplicationCommandsJSONBody } from "./deps.ts";
 import { HookMap } from "./HookMap.ts";
 
 export const slashCommands =
@@ -13,5 +9,5 @@ export const hooks = {
   buttonClick: new HookMap(),
   select: new HookMap(),
   modalSubmit: new HookMap(),
-  interaction: new HookMap(),
+  autocomplete: new HookMap(),
 };

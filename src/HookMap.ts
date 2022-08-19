@@ -1,6 +1,6 @@
 import {
+  APIApplicationCommandAutocompleteInteraction,
   APIApplicationCommandInteraction,
-  APIChatInputApplicationCommandInteraction,
   APIInteraction,
   APIInteractionResponse,
   APIMessageComponentInteraction,
@@ -42,5 +42,19 @@ export class HookMap extends Map<string, Hook> {
     } else {
       return errorMessage;
     }
+  }
+
+  async runWithAutocomplete(
+    interaction: APIApplicationCommandAutocompleteInteraction
+  ) {
+    const commandName = interaction.data.name;
+    for (const option of interaction.data.options) {
+      const key = `${commandName};${option.name}`;
+      const hook = this.get(key);
+      if (hook) {
+        return await hook(interaction);
+      }
+    }
+    return errorMessage;
   }
 }
